@@ -155,7 +155,12 @@ class MainActivity : AppCompatActivity() {
         webView.evaluateJavascript(code) { result ->
             // JavaScript 실행 결과를 처리
             Toast.makeText(this@MainActivity, result, Toast.LENGTH_SHORT).show() // 테스트 용도
-            onTextExtracted(result)
+            if(result != "null"){
+                webView.stopLoading() // 웹 페이지 로딩 중지
+                webView.destroy() // WebView 종료
+                onTextExtracted(result)
+            }
+
         }
     }
 
