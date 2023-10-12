@@ -11,6 +11,7 @@
 
     <!-- 텍스트뷰 -->
     <TextView
+
         android:id="@+id/textbox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -27,6 +28,17 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:visibility="visible" />
+        android:visibility="visible"
+        >
+
+        <Button
+            android:id="@+id/note"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_x="231dp"
+            android:layout_y="446dp"
+            android:onClick="activity_note"
+            android:text="Button" />
+    </WebView>
 
 </LinearLayout>

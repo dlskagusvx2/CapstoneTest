@@ -1,27 +1,27 @@
 package com.example.capstonetest
 
-import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.webkit.JavascriptInterface
-import android.webkit.WebChromeClient
-import android.webkit.WebView
-import android.webkit.WebViewClient
-import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
-import com.example.capstonetest.databinding.ActivityMainBinding
-import com.google.gson.JsonArray
-import com.google.gson.JsonObject
-import com.google.gson.JsonParser
-import com.knuddels.jtokkit.Encodings
-import com.knuddels.jtokkit.api.Encoding
-import com.knuddels.jtokkit.api.ModelType
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.RequestBody.Companion.toRequestBody
-import java.io.IOException
-import java.util.concurrent.TimeUnit
+    import android.os.Bundle
+    import android.os.Handler
+    import android.os.Looper
+    import android.webkit.JavascriptInterface
+    import android.webkit.WebChromeClient
+    import android.webkit.WebView
+    import android.webkit.WebViewClient
+    import android.widget.Toast
+    import androidx.appcompat.app.AppCompatActivity
+    import com.example.capstonetest.databinding.ActivityMainBinding
+    import com.google.gson.JsonArray
+    import com.google.gson.JsonObject
+    import com.google.gson.JsonParser
+    import com.knuddels.jtokkit.Encodings
+    import com.knuddels.jtokkit.api.Encoding
+    import com.knuddels.jtokkit.api.ModelType
+    import okhttp3.MediaType.Companion.toMediaType
+    import okhttp3.OkHttpClient
+    import okhttp3.Request
+    import okhttp3.RequestBody.Companion.toRequestBody
+    import java.io.IOException
+    import java.util.concurrent.TimeUnit
 
 
 class MainActivity : AppCompatActivity() {
