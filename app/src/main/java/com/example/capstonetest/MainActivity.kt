@@ -20,6 +20,7 @@ import okhttp3.Request
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.IOException
+import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity() {
     private val binding by lazy {
@@ -74,11 +75,15 @@ class MainActivity : AppCompatActivity() {
                                 for (var i = 0; i < divElements.length; i++) {
                                     textContents.push(divElements[i].textContent || divElements[i].innerText);
                                 }
-                                var allText = textContents.join('\\n');
-                                window.android.onTextExtracted(allText); // 결과를 Android 앱에 전달
+                                if (textContents.length > 0) {
+                                    var allText = textContents.join('\\n');
+                                    window.android.onTextExtracted(allText); // 결과를 Android 앱에 전달
+                                    clearInterval(elementsInterval); // setInterval 중지
+                                }
                             }
                         }, 1000); // 1초마다 요소를 체크
                     },3000);
+                    
                 })();
                 """
                     )
@@ -100,7 +105,10 @@ class MainActivity : AppCompatActivity() {
         userMessage.addProperty("content", "${q} 유튜브 영상 스크립트인데 요약해줘.") // 사용자 메시지를 추가
         messagesArray.add(userMessage)
 
-        val client = OkHttpClient()
+        val client = OkHttpClient.Builder()
+            .connectTimeout(300, TimeUnit.SECONDS) // 연결 시간 초과 설정
+            .readTimeout(300, TimeUnit.SECONDS)    // 읽기 시간 초과 설정
+            .build()
         val jsonMediaType = "application/json; charset=utf-8".toMediaType()
         val requestBody = JsonObject()
         requestBody.add("messages", messagesArray)
@@ -125,12 +133,12 @@ class MainActivity : AppCompatActivity() {
 
                     runOnUiThread {
                         // UI 업데이트를 메인 스레드에서 수행
-                        binding.textbox.text = content ?: "실패"
+                        binding.textbox.text = content ?: "실패1"
                     }
                 } else {
                     runOnUiThread {
                         // UI 업데이트를 메인 스레드에서 수행
-                        binding.textbox.text = "실패"
+                        binding.textbox.text = "실패2"
                     }
                 }
             } catch (e: IOException) {
@@ -158,7 +166,7 @@ class MainActivity : AppCompatActivity() {
             if(result != "null"){
                 webView.stopLoading() // 웹 페이지 로딩 중지
                 webView.destroy() // WebView 종료
-                onTextExtracted(result)
+                //onTextExtracted(result)
             }
 
         }
