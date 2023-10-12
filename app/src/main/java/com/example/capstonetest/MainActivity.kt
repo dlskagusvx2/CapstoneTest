@@ -3,6 +3,9 @@ package com.example.capstonetest
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.view.View.GONE
+import android.view.View.INVISIBLE
+import android.view.View.VISIBLE
 import android.webkit.JavascriptInterface
 import android.webkit.WebChromeClient
 import android.webkit.WebView
@@ -22,6 +25,7 @@ import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.IOException
 import java.util.concurrent.TimeUnit
+import kotlin.Array as Array1
 
 
 class MainActivity : AppCompatActivity() {
@@ -33,6 +37,7 @@ class MainActivity : AppCompatActivity() {
     val apiKey = ""// api 키 입력해야함
     val endpoint = "https://api.openai.com/v1/chat/completions"
     val model = "gpt-3.5-turbo" // 사용할 모델 (GPT-3 Turbo)
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -69,12 +74,6 @@ class MainActivity : AppCompatActivity() {
                     var  buttonElement= document.getElementById('primary-button').querySelector('button');
                     buttonElement.click();
                     
-                   setTimeout(function() {
-                        //기능 버튼 찾아서 클릭
-                        var menuButton = document.querySelector('panels').querySelector('header').querySelector('button');
-                        menuButton.click();
-                        
-                    },3000);
                     setTimeout(function() {
                         // segment-text.style-scope ytd-transcript-segment-renderer 요소를 찾아서 추출
                         var elementsInterval = setInterval(function() {
@@ -88,7 +87,9 @@ class MainActivity : AppCompatActivity() {
                                 }
                                 if (textContents.length > 0) {
                                     var allText = textContents.join('');
-                                    window.android.onTextExtracted(allText); // 결과를 Android 앱에 전달
+                                    var pattern = /\b\d{1,3}:\d{2}\b/g;
+                                    var modifiedString = allText.replace(pattern, '').replace(/\n/g, '');
+                                    window.android.onTextExtracted(modifiedString); // 결과를 Android 앱에 전달
                                     clearInterval(elementsInterval); // setInterval 중지
                                 }
                             }
@@ -103,15 +104,13 @@ class MainActivity : AppCompatActivity() {
         }
 
         // 웹 페이지 로드
-        webView.loadUrl("https://www.youtube.com/watch?v=UC0Q_wPciGI")
+        webView.loadUrl("https://www.youtube.com/watch?v=25V2GCBWP0Q")
 
         // WebView에서 JavaScript 코드 실행 결과를 처리하는 인터페이스
         webView.addJavascriptInterface(this, "android")
     }
 
     private fun askToChatGPT(q: String) {
-        val token_size = getTokenSize(q)
-        binding.textbox.text = token_size.toString()
         val messagesArray = JsonArray()
         val userMessage = JsonObject()
         userMessage.addProperty("role", "user")
@@ -133,7 +132,7 @@ class MainActivity : AppCompatActivity() {
             .post(requestBody.toString().toRequestBody(jsonMediaType))
             .build()
 
-        Thread {
+        val thread = Thread {
             try {
                 val response = client.newCall(request).execute()
                 val responseBody = response.body?.string()
@@ -143,11 +142,16 @@ class MainActivity : AppCompatActivity() {
                 if (choicesArray != null && choicesArray.size() > 0) {
                     val assistantMessage = choicesArray[0].asJsonObject.getAsJsonObject("message")
                     val content = assistantMessage.getAsJsonPrimitive("content").asString
-
                     runOnUiThread {
-                        // UI 업데이트를 메인 스레드에서 수행
-                        binding.textbox.text = content ?: "실패1"
+                        if(binding.textbox.text != "텍스트가 여기에 표시됩니다."){
+                            var currentText = binding.textbox.text.toString()
+                            var newText = currentText + content
+                            binding.textbox.text = newText
+                        }else{
+                            binding.textbox.text = content
+                        }
                     }
+
                 } else {
                     runOnUiThread {
                         // UI 업데이트를 메인 스레드에서 수행
@@ -162,11 +166,32 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }.start()
+
+
     }
     // JavaScript에서 호출할 메서드
     @JavascriptInterface
     fun onTextExtracted(result: String) {
-        askToChatGPT(result)
+        sliceToken(result)
+
+    }
+
+    //토큰 제한 해결 메서드
+    private fun sliceToken(tkn:String){
+        binding.textbox.visibility = GONE
+        val tkn_len = tkn.length
+        if(getTokenSize(tkn) <= 4000){
+            askToChatGPT(tkn)
+        }else{
+            var front_Text = tkn.substring(0,tkn_len / 2)
+            var back_Text = tkn.substring(tkn_len/2, tkn_len)
+            sliceToken(front_Text)
+            sliceToken(back_Text)
+            val postResult = binding.textbox.text.toString()
+            binding.textbox.text = "텍스트가 여기에 표시됩니다."
+            sliceToken(postResult)
+        }
+        binding.textbox.visibility = VISIBLE
     }
 
 
@@ -189,5 +214,7 @@ class MainActivity : AppCompatActivity() {
         val encoded: List<Int> = enc.encode(text)
         return encoded.size
     }
+
+
 
 }
