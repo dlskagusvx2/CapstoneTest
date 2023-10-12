@@ -13,14 +13,16 @@ import com.example.capstonetest.databinding.ActivityMainBinding
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
-import okhttp3.MediaType
+import com.knuddels.jtokkit.Encodings
+import com.knuddels.jtokkit.api.Encoding
+import com.knuddels.jtokkit.api.ModelType
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.IOException
 import java.util.concurrent.TimeUnit
+
 
 class MainActivity : AppCompatActivity() {
     private val binding by lazy {
@@ -28,7 +30,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private lateinit var webView: WebView
-    val apiKey = "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"// api 키 입력해야함
+    val apiKey = ""// api 키 입력해야함
     val endpoint = "https://api.openai.com/v1/chat/completions"
     val model = "gpt-3.5-turbo" // 사용할 모델 (GPT-3 Turbo)
 
@@ -44,6 +46,9 @@ class MainActivity : AppCompatActivity() {
         webSettings.javaScriptEnabled = true // JavaScript 활성화
         webSettings.userAgentString = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3" // User Agent 설정
 
+
+        // 페이지를 원하는 스케일로 로드
+        webView.setInitialScale(80); // 50% 스케일로 페이지 로드
         webView.webChromeClient = WebChromeClient()
 
 
@@ -61,9 +66,15 @@ class MainActivity : AppCompatActivity() {
                         descriptionInner.click();
                     }
                     // 스크립트 표시 버튼을 찾아서 클릭
-                    var parentElement = document.getElementById('primary-button');
-                    var buttonElement = parentElement.querySelector('button');
+                    var  buttonElement= document.getElementById('primary-button').querySelector('button');
                     buttonElement.click();
+                    
+                   setTimeout(function() {
+                        //기능 버튼 찾아서 클릭
+                        var menuButton = document.querySelector('panels').querySelector('header').querySelector('button');
+                        menuButton.click();
+                        
+                    },3000);
                     setTimeout(function() {
                         // segment-text.style-scope ytd-transcript-segment-renderer 요소를 찾아서 추출
                         var elementsInterval = setInterval(function() {
@@ -76,7 +87,7 @@ class MainActivity : AppCompatActivity() {
                                     textContents.push(divElements[i].textContent || divElements[i].innerText);
                                 }
                                 if (textContents.length > 0) {
-                                    var allText = textContents.join('\\n');
+                                    var allText = textContents.join('');
                                     window.android.onTextExtracted(allText); // 결과를 Android 앱에 전달
                                     clearInterval(elementsInterval); // setInterval 중지
                                 }
@@ -92,13 +103,15 @@ class MainActivity : AppCompatActivity() {
         }
 
         // 웹 페이지 로드
-        webView.loadUrl("https://www.youtube.com/watch?v=fkS-nARvbbs")
+        webView.loadUrl("https://www.youtube.com/watch?v=UC0Q_wPciGI")
 
         // WebView에서 JavaScript 코드 실행 결과를 처리하는 인터페이스
         webView.addJavascriptInterface(this, "android")
     }
 
     private fun askToChatGPT(q: String) {
+        val token_size = getTokenSize(q)
+        binding.textbox.text = token_size.toString()
         val messagesArray = JsonArray()
         val userMessage = JsonObject()
         userMessage.addProperty("role", "user")
@@ -166,10 +179,15 @@ class MainActivity : AppCompatActivity() {
             if(result != "null"){
                 webView.stopLoading() // 웹 페이지 로딩 중지
                 webView.destroy() // WebView 종료
-                //onTextExtracted(result)
             }
 
         }
+    }
+    fun getTokenSize(text: String?): Int {
+        val registry = Encodings.newDefaultEncodingRegistry()
+        val enc: Encoding = registry.getEncodingForModel(ModelType.GPT_3_5_TURBO)
+        val encoded: List<Int> = enc.encode(text)
+        return encoded.size
     }
 
 }
