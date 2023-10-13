@@ -3,6 +3,7 @@ package com.example.capstonetest
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.View.GONE
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
@@ -16,16 +17,15 @@ import com.example.capstonetest.databinding.ActivityMainBinding
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
+import com.google.mlkit.common.sdkinternal.ModelType
 import com.knuddels.jtokkit.Encodings
 import com.knuddels.jtokkit.api.Encoding
-import com.knuddels.jtokkit.api.ModelType
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.IOException
 import java.util.concurrent.TimeUnit
-import kotlin.Array as Array1
 
 
 class MainActivity : AppCompatActivity() {
@@ -53,7 +53,7 @@ class MainActivity : AppCompatActivity() {
 
 
         // 페이지를 원하는 스케일로 로드
-        webView.setInitialScale(80); // 50% 스케일로 페이지 로드
+        webView.setInitialScale(80); // 80% 스케일로 페이지 로드
         webView.webChromeClient = WebChromeClient()
 
 
@@ -104,13 +104,14 @@ class MainActivity : AppCompatActivity() {
         }
 
         // 웹 페이지 로드
-        webView.loadUrl("https://www.youtube.com/watch?v=25V2GCBWP0Q")
+        webView.loadUrl("https://www.youtube.com/watch?v=ayOvfqFvrfE")
 
         // WebView에서 JavaScript 코드 실행 결과를 처리하는 인터페이스
         webView.addJavascriptInterface(this, "android")
     }
 
     private fun askToChatGPT(q: String) {
+        Toast.makeText(this@MainActivity,"askToChatGPT함수 시작",Toast.LENGTH_SHORT).show()
         val messagesArray = JsonArray()
         val userMessage = JsonObject()
         userMessage.addProperty("role", "user")
@@ -132,7 +133,7 @@ class MainActivity : AppCompatActivity() {
             .post(requestBody.toString().toRequestBody(jsonMediaType))
             .build()
 
-        val thread = Thread {
+        Thread {
             try {
                 val response = client.newCall(request).execute()
                 val responseBody = response.body?.string()
@@ -172,13 +173,16 @@ class MainActivity : AppCompatActivity() {
     // JavaScript에서 호출할 메서드
     @JavascriptInterface
     fun onTextExtracted(result: String) {
+        //webView.destroy() // WebView 종료
         sliceToken(result)
 
     }
 
     //토큰 제한 해결 메서드
     private fun sliceToken(tkn:String){
-        binding.textbox.visibility = GONE
+        Toast.makeText(this@MainActivity,"sliceToken함수 시작 ${tkn.length}",Toast.LENGTH_SHORT).show()
+        Log.d("aaa","sliceToken함수 시작 ${tkn.length}")
+        //binding.textbox.visibility = GONE
         val tkn_len = tkn.length
         if(getTokenSize(tkn) <= 4000){
             askToChatGPT(tkn)
@@ -187,11 +191,17 @@ class MainActivity : AppCompatActivity() {
             var back_Text = tkn.substring(tkn_len/2, tkn_len)
             sliceToken(front_Text)
             sliceToken(back_Text)
-            val postResult = binding.textbox.text.toString()
-            binding.textbox.text = "텍스트가 여기에 표시됩니다."
-            sliceToken(postResult)
+            lastSummary()
         }
-        binding.textbox.visibility = VISIBLE
+        //binding.textbox.visibility = VISIBLE
+    }
+
+    private fun lastSummary(){
+        val postResult = binding.textbox.text.toString()
+        Toast.makeText(this@MainActivity,"lastSummary함수 시작 ${postResult.length}",Toast.LENGTH_SHORT).show()
+        Log.d("aaa","lastSummary함수 시작 ${postResult.length}")
+        binding.textbox.text = "텍스트가 여기에 표시됩니다."
+        sliceToken(postResult)
     }
 
 
@@ -201,20 +211,12 @@ class MainActivity : AppCompatActivity() {
         webView.evaluateJavascript(code) { result ->
             // JavaScript 실행 결과를 처리
             Toast.makeText(this@MainActivity, result, Toast.LENGTH_SHORT).show() // 테스트 용도
-            if(result != "null"){
-                webView.stopLoading() // 웹 페이지 로딩 중지
-                webView.destroy() // WebView 종료
-            }
-
         }
     }
     fun getTokenSize(text: String?): Int {
         val registry = Encodings.newDefaultEncodingRegistry()
-        val enc: Encoding = registry.getEncodingForModel(ModelType.GPT_3_5_TURBO)
+        val enc: Encoding = registry.getEncodingForModel(com.knuddels.jtokkit.api.ModelType.GPT_3_5_TURBO)
         val encoded: List<Int> = enc.encode(text)
         return encoded.size
     }
-
-
-
 }
