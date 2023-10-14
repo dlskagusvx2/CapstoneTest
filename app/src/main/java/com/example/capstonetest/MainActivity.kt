@@ -17,7 +17,6 @@ import com.example.capstonetest.databinding.ActivityMainBinding
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
-import com.google.mlkit.common.sdkinternal.ModelType
 import com.knuddels.jtokkit.Encodings
 import com.knuddels.jtokkit.api.Encoding
 import okhttp3.MediaType.Companion.toMediaType
@@ -104,7 +103,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         // 웹 페이지 로드
-        webView.loadUrl("https://www.youtube.com/watch?v=ayOvfqFvrfE")
+        webView.loadUrl("https://www.youtube.com/watch?v=yUt9ACfZz7o")
 
         // WebView에서 JavaScript 코드 실행 결과를 처리하는 인터페이스
         webView.addJavascriptInterface(this, "android")
@@ -170,6 +169,97 @@ class MainActivity : AppCompatActivity() {
 
 
     }
+
+    private fun askToMultiChatGPT(q1: String, q2:String) {
+        Toast.makeText(this@MainActivity,"askToMultiChatGPT함수 시작",Toast.LENGTH_SHORT).show()
+        val firstMessagesArray = JsonArray()
+        val firstMessage = JsonObject()
+        firstMessage.addProperty("role", "user")
+        firstMessage.addProperty("content", "${q1} 유튜브 영상 스크립트인데 요약해줘.") // 사용자 메시지를 추가
+        firstMessagesArray.add(firstMessage)
+
+        val secondMessagesArray = JsonArray()
+        val secondMessage = JsonObject()
+        secondMessage.addProperty("role", "user")
+        secondMessage.addProperty("content", "${q2} 유튜브 영상 스크립트인데 요약해줘.") // 사용자 메시지를 추가
+        secondMessagesArray.add(secondMessage)
+
+        val client = OkHttpClient.Builder()
+            .connectTimeout(300, TimeUnit.SECONDS) // 연결 시간 초과 설정
+            .readTimeout(300, TimeUnit.SECONDS)    // 읽기 시간 초과 설정
+            .build()
+
+        val jsonMediaType = "application/json; charset=utf-8".toMediaType()
+        val firstRequestBody = JsonObject()
+        firstRequestBody.add("messages", firstMessagesArray)
+        firstRequestBody.addProperty("model", model) // 모델 명시
+
+        val secondRequestBody = JsonObject()
+        secondRequestBody.add("messages", secondMessagesArray)
+        secondRequestBody.addProperty("model", model) // 모델 명시
+
+        val firstRequest = Request.Builder()
+            .url(endpoint)
+            .addHeader("Authorization", "Bearer $apiKey")
+            .post(firstRequestBody.toString().toRequestBody(jsonMediaType))
+            .build()
+
+        val secondRequest = Request.Builder()
+            .url(endpoint)
+            .addHeader("Authorization", "Bearer $apiKey")
+            .post(secondRequestBody.toString().toRequestBody(jsonMediaType))
+            .build()
+
+        Thread {
+            try {
+                val firstResponse = client.newCall(firstRequest).execute()
+                val firstResponseBody = firstResponse.body?.string()
+                val firstJsonResponse = JsonParser.parseString(firstResponseBody) as JsonObject
+                val firstChoicesArray = firstJsonResponse.getAsJsonArray("choices")
+
+                val secondResponse = client.newCall(secondRequest).execute()
+                val secondResponseBody = secondResponse.body?.string()
+                val secondJsonResponse = JsonParser.parseString(secondResponseBody) as JsonObject
+                val secondChoicesArray = secondJsonResponse.getAsJsonArray("choices")
+
+                if (firstChoicesArray != null && firstChoicesArray.size() > 0 && secondChoicesArray != null && secondChoicesArray.size() > 0) {
+                    val firstAssistantMessage = firstChoicesArray[0].asJsonObject.getAsJsonObject("message")
+                    val firstContent = firstAssistantMessage.getAsJsonPrimitive("content").asString
+
+                    val secondAssistantMessage = secondChoicesArray[0].asJsonObject.getAsJsonObject("message")
+                    val secondContent = secondAssistantMessage.getAsJsonPrimitive("content").asString
+
+                    val resultText = firstContent + secondContent
+
+                    runOnUiThread {
+                        if(binding.textbox.text != "텍스트가 여기에 표시됩니다."){
+                            var currentText = binding.textbox.text.toString()
+                            var newText = currentText + resultText
+                            binding.textbox.text = newText
+                        }else{
+                            binding.textbox.text = resultText
+                        }
+                        lastSummary()
+                    }
+
+                } else {
+                    runOnUiThread {
+                        // UI 업데이트를 메인 스레드에서 수행
+                        binding.textbox.text = "실패2"
+                    }
+                }
+            } catch (e: IOException) {
+                e.printStackTrace()
+                runOnUiThread {
+                    // UI 업데이트를 메인 스레드에서 수행
+                    binding.textbox.text = "오류 발생 ${e}"
+                }
+            }
+        }.start()
+
+
+    }
+
     // JavaScript에서 호출할 메서드
     @JavascriptInterface
     fun onTextExtracted(result: String) {
@@ -189,9 +279,17 @@ class MainActivity : AppCompatActivity() {
         }else{
             var front_Text = tkn.substring(0,tkn_len / 2)
             var back_Text = tkn.substring(tkn_len/2, tkn_len)
-            sliceToken(front_Text)
-            sliceToken(back_Text)
-            lastSummary()
+            val frontTokenSize = getTokenSize(front_Text)
+            val backTokenSize = getTokenSize(back_Text)
+            if( frontTokenSize<= 4000 && backTokenSize <= 4000){
+                askToMultiChatGPT(front_Text,back_Text)
+            }else{
+                Toast.makeText(this@MainActivity,"스크립트의 길이가 너무 깁니다. ${frontTokenSize}, ${backTokenSize}",Toast.LENGTH_SHORT).show()
+                Log.d("aaa","스크립트의 길이가 너무 깁니다. ${frontTokenSize}, ${backTokenSize}")
+            }
+
+
+
         }
         //binding.textbox.visibility = VISIBLE
     }
