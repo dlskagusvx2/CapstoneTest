@@ -1,5 +1,6 @@
 package com.example.capstonetest
 
+import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -13,6 +14,7 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import com.example.capstonetest.databinding.ActivityMainBinding
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
@@ -103,7 +105,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         // 웹 페이지 로드
-        webView.loadUrl("https://www.youtube.com/watch?v=yUt9ACfZz7o")
+        webView.loadUrl("https://www.youtube.com/watch?v=If95bdcptEM")
 
         // WebView에서 JavaScript 코드 실행 결과를 처리하는 인터페이스
         webView.addJavascriptInterface(this, "android")
@@ -142,6 +144,7 @@ class MainActivity : AppCompatActivity() {
                 if (choicesArray != null && choicesArray.size() > 0) {
                     val assistantMessage = choicesArray[0].asJsonObject.getAsJsonObject("message")
                     val content = assistantMessage.getAsJsonPrimitive("content").asString
+                    Log.d("aaa","askToChatGPT함수 content => ${content}")
                     runOnUiThread {
                         if(binding.textbox.text != "텍스트가 여기에 표시됩니다."){
                             var currentText = binding.textbox.text.toString()
@@ -187,6 +190,7 @@ class MainActivity : AppCompatActivity() {
         val client = OkHttpClient.Builder()
             .connectTimeout(300, TimeUnit.SECONDS) // 연결 시간 초과 설정
             .readTimeout(300, TimeUnit.SECONDS)    // 읽기 시간 초과 설정
+            .writeTimeout(300,TimeUnit.SECONDS)
             .build()
 
         val jsonMediaType = "application/json; charset=utf-8".toMediaType()
@@ -230,6 +234,7 @@ class MainActivity : AppCompatActivity() {
                     val secondContent = secondAssistantMessage.getAsJsonPrimitive("content").asString
 
                     val resultText = firstContent + secondContent
+                    Log.d("aaa","askToMultiChatGPT함수 resultText => ${resultText}")
 
                     runOnUiThread {
                         if(binding.textbox.text != "텍스트가 여기에 표시됩니다."){
@@ -263,13 +268,18 @@ class MainActivity : AppCompatActivity() {
     // JavaScript에서 호출할 메서드
     @JavascriptInterface
     fun onTextExtracted(result: String) {
-        //webView.destroy() // WebView 종료
+
         sliceToken(result)
 
     }
 
     //토큰 제한 해결 메서드
     private fun sliceToken(tkn:String){
+        //webView.destroy() // WebView 종료
+        if(binding.webView.isVisible){
+            binding.webView.visibility = GONE
+        }
+
         Toast.makeText(this@MainActivity,"sliceToken함수 시작 ${tkn.length}",Toast.LENGTH_SHORT).show()
         Log.d("aaa","sliceToken함수 시작 ${tkn.length}")
         //binding.textbox.visibility = GONE
@@ -286,6 +296,8 @@ class MainActivity : AppCompatActivity() {
             }else{
                 Toast.makeText(this@MainActivity,"스크립트의 길이가 너무 깁니다. ${frontTokenSize}, ${backTokenSize}",Toast.LENGTH_SHORT).show()
                 Log.d("aaa","스크립트의 길이가 너무 깁니다. ${frontTokenSize}, ${backTokenSize}")
+                sliceToken(front_Text)
+                sliceToken(back_Text)
             }
 
 
@@ -298,6 +310,7 @@ class MainActivity : AppCompatActivity() {
         val postResult = binding.textbox.text.toString()
         Toast.makeText(this@MainActivity,"lastSummary함수 시작 ${postResult.length}",Toast.LENGTH_SHORT).show()
         Log.d("aaa","lastSummary함수 시작 ${postResult.length}")
+        Log.d("aaa", "${postResult}")
         binding.textbox.text = "텍스트가 여기에 표시됩니다."
         sliceToken(postResult)
     }
