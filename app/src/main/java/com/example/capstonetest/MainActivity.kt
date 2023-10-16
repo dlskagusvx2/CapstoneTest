@@ -13,6 +13,9 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentStatePagerAdapter
 import com.example.capstonetest.databinding.ActivityMainBinding
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
@@ -20,6 +23,8 @@ import com.google.gson.JsonParser
 import com.google.mlkit.common.sdkinternal.ModelType
 import com.knuddels.jtokkit.Encodings
 import com.knuddels.jtokkit.api.Encoding
+import kotlinx.android.synthetic.main.activity_main.indicator
+import kotlinx.android.synthetic.main.activity_main.viewpager
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -40,7 +45,42 @@ class MainActivity : AppCompatActivity() {
 
 
 
+    private var vpAdapter: FragmentStatePagerAdapter? = null
+
+
+
+
+
+    class CustomPagerAdapter(fm: FragmentManager): FragmentStatePagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+        private val PAGENUMBER = 4
+
+        override fun getCount(): Int {
+            return PAGENUMBER
+        }
+
+        override fun getItem(position: Int): Fragment {
+            return when (position) {
+                0 -> TestFragment.newInstance(R.raw.img00, "test 00")
+                1 -> TestFragment.newInstance(R.raw.img01, "test 01")
+                2 -> TestFragment.newInstance(R.raw.img02, "test 02")
+                else -> TestFragment.newInstance(R.raw.img03, "test 03")
+            }
+        }
+    }
+
+
+
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        setContentView(R.layout.activity_main)
+
+        vpAdapter = CustomPagerAdapter(supportFragmentManager)
+        viewpager.adapter = vpAdapter
+
+        indicator.setViewPager(viewpager)
+
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 

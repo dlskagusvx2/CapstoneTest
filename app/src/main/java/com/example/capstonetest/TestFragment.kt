@@ -4,6 +4,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.capstonetest.R
+import kotlinx.android.synthetic.main.fragment_test.imageView
+import kotlinx.android.synthetic.main.fragment_test.textView
 
 class TestFragment : Fragment() {
     private var image: Int? = null
