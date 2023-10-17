@@ -1,5 +1,6 @@
 package com.example.capstonetest
 
+import android.content.Intent
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import android.os.Bundle
 import android.os.Handler
@@ -38,12 +39,20 @@ class MainActivity : AppCompatActivity() {
     val apiKey = ""// api 키 입력해야함
     val endpoint = "https://api.openai.com/v1/chat/completions"
     val model = "gpt-3.5-turbo" // 사용할 모델 (GPT-3 Turbo)
+    val l = "https://www.youtube.com/watch?v=If95bdcptEM"
 
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
+        binding.mButton.setOnClickListener {
+            val intent = Intent(this@MainActivity, SubActivity::class.java)
+            intent.putExtra("url",l)
+            startActivity(intent)
+        }
+
 
         webView = findViewById(R.id.webView)
 
