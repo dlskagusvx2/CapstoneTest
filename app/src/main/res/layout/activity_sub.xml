@@ -1,25 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.ramotion.foldingcell.FoldingCell
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/folding_cell"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".SubActivity">
+    android:layout_height="wrap_content"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".SubActivity"
+    app:animationDuration="1000"
+    app:additionalFlipsCount="2"
+    app:cameraHeight="30"
+    >
 
-    <TextView
-        android:layout_width="wrap_content"
+    <FrameLayout
+        android:id="@+id/cell_content_view"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="aaa"
-        tools:layout_editor_absoluteX="194dp"
-        tools:layout_editor_absoluteY="274dp"
-        android:id="@+id/txt"/>
+        android:background="@android:color/holo_green_dark"
+        android:visibility="gone">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:text="aaa"
+            android:id="@+id/txt"
 
-    <Button
-        android:id="@+id/mButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="화면전환"
-        tools:layout_editor_absoluteX="155dp"
-        tools:layout_editor_absoluteY="341dp" />
+            />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/cell_title_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:background="@android:color/holo_blue_dark" />
+        <Button
+            android:id="@+id/mButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="화면전환"
+            tools:layout_editor_absoluteX="155dp"
+            tools:layout_editor_absoluteY="341dp" />
+    </FrameLayout>
+
+
+</com.ramotion.foldingcell.FoldingCell>
