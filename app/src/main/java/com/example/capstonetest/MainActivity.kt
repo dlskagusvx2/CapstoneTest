@@ -1,13 +1,10 @@
 package com.example.capstonetest
 
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.View.GONE
-import android.view.View.INVISIBLE
-import android.view.View.VISIBLE
 import android.webkit.JavascriptInterface
 import android.webkit.WebChromeClient
 import android.webkit.WebView
@@ -21,10 +18,16 @@ import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import com.knuddels.jtokkit.Encodings
 import com.knuddels.jtokkit.api.Encoding
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.runBlocking
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.Response
 import java.io.IOException
 import java.util.concurrent.TimeUnit
 
@@ -45,7 +48,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        webView = findViewById(R.id.webView)
+        webView = binding.webView
 
         // WebView 설정
         val webSettings = webView.settings
@@ -173,8 +176,9 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private fun askToMultiChatGPT(q1: String, q2:String) {
+    private fun askToMultiChatGPT(qList: List<String>) {
         Toast.makeText(this@MainActivity,"askToMultiChatGPT함수 시작",Toast.LENGTH_SHORT).show()
+        /*
         val firstMessagesArray = JsonArray()
         val firstMessage = JsonObject()
         firstMessage.addProperty("role", "user")
@@ -185,13 +189,14 @@ class MainActivity : AppCompatActivity() {
         val secondMessage = JsonObject()
         secondMessage.addProperty("role", "user")
         secondMessage.addProperty("content", "${q2} 유튜브 영상 스크립트인데 요약해줘.") // 사용자 메시지를 추가
-        secondMessagesArray.add(secondMessage)
+        secondMessagesArray.add(secondMessage) */
 
         val client = OkHttpClient.Builder()
             .connectTimeout(300, TimeUnit.SECONDS) // 연결 시간 초과 설정
             .readTimeout(300, TimeUnit.SECONDS)    // 읽기 시간 초과 설정
             .writeTimeout(300,TimeUnit.SECONDS)
             .build()
+        /*
 
         val jsonMediaType = "application/json; charset=utf-8".toMediaType()
         val firstRequestBody = JsonObject()
@@ -260,8 +265,52 @@ class MainActivity : AppCompatActivity() {
                     binding.textbox.text = "오류 발생 ${e}"
                 }
             }
-        }.start()
+        }.start() */
 
+
+        val responses = runBlocking {
+            val deferredResponses = qList.map { q ->
+                async(Dispatchers.IO) {
+                    val messagesArray = JsonArray()
+                    val message = JsonObject()
+                    message.addProperty("role", "user")
+                    message.addProperty("content", "${q} 유튜브 영상 스크립트인데 요약해줘.") // 사용자 메시지를 추가
+                    messagesArray.add(message)
+
+                    val jsonMediaType = "application/json; charset=utf-8".toMediaType()
+                    val requestBody = JsonObject()
+                    requestBody.add("messages", messagesArray)
+                    requestBody.addProperty("model", model) // 모델 명시
+
+                    val request = Request.Builder()
+                        .url(endpoint)
+                        .addHeader("Authorization", "Bearer $apiKey")
+                        .post(requestBody.toString().toRequestBody(jsonMediaType))
+                        .build()
+
+                    val response:Response  = client.newCall(request).execute()
+                    response
+
+                }
+            }
+
+            deferredResponses.awaitAll()
+        }
+        var responseList = mutableListOf<String>()
+
+        for (response in responses){
+            val responseBody = response.body?.string()
+            val jsonResponse = JsonParser.parseString(responseBody) as JsonObject
+            val choicesArray = jsonResponse.getAsJsonArray("choices")
+
+            val assistantMessage = choicesArray[0].asJsonObject.getAsJsonObject("message")
+            val content = assistantMessage.getAsJsonPrimitive("content").asString
+
+            responseList.add(content)
+
+        }
+
+        binding.textbox.text = responseList.joinToString("")
 
     }
 
@@ -273,37 +322,50 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    private fun substringToken(t:String): MutableList<String> {
+        var result = mutableListOf<String>()
+        val tLen = t.length
+        val frontToken = t.substring(0,tLen/2)
+        val backToken = t.substring(tLen/2,tLen)
+        val frontLen = getTokenSize(frontToken)
+        val backLen = getTokenSize(backToken)
+        if(frontLen <= 4000 && backLen <= 4000){
+            result.add(frontToken)
+            result.add(backToken)
+        }else{
+            if (frontLen > 4000){
+                for (tkn in substringToken(frontToken)){
+                    result.add(tkn)
+                }
+            }else {
+                result.add(frontToken)
+            }
+
+            if(backLen > 4000){
+                for (tkn in substringToken(backToken)){
+                    result.add(tkn)
+                }
+            }else{
+                result.add(backToken)
+            }
+
+        }
+        return result
+    }
+
     //토큰 제한 해결 메서드
     private fun sliceToken(tkn:String){
-        //webView.destroy() // WebView 종료
         if(binding.webView.isVisible){
             binding.webView.visibility = GONE
         }
 
         Toast.makeText(this@MainActivity,"sliceToken함수 시작 ${tkn.length}",Toast.LENGTH_SHORT).show()
         Log.d("aaa","sliceToken함수 시작 ${tkn.length}")
-        //binding.textbox.visibility = GONE
-        val tkn_len = tkn.length
         if(getTokenSize(tkn) <= 4000){
             askToChatGPT(tkn)
         }else{
-            var front_Text = tkn.substring(0,tkn_len / 2)
-            var back_Text = tkn.substring(tkn_len/2, tkn_len)
-            val frontTokenSize = getTokenSize(front_Text)
-            val backTokenSize = getTokenSize(back_Text)
-            if( frontTokenSize<= 4000 && backTokenSize <= 4000){
-                askToMultiChatGPT(front_Text,back_Text)
-            }else{
-                Toast.makeText(this@MainActivity,"스크립트의 길이가 너무 깁니다. ${frontTokenSize}, ${backTokenSize}",Toast.LENGTH_SHORT).show()
-                Log.d("aaa","스크립트의 길이가 너무 깁니다. ${frontTokenSize}, ${backTokenSize}")
-                sliceToken(front_Text)
-                sliceToken(back_Text)
-            }
-
-
-
+            askToMultiChatGPT(substringToken(tkn))
         }
-        //binding.textbox.visibility = VISIBLE
     }
 
     private fun lastSummary(){
@@ -321,7 +383,6 @@ class MainActivity : AppCompatActivity() {
     private fun runJavaScriptCode(code: String) {
         webView.evaluateJavascript(code) { result ->
             // JavaScript 실행 결과를 처리
-            Toast.makeText(this@MainActivity, result, Toast.LENGTH_SHORT).show() // 테스트 용도
         }
     }
     fun getTokenSize(text: String?): Int {
