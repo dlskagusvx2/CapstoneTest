@@ -51,6 +51,7 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this@MainActivity, SubActivity::class.java)
             intent.putExtra("url",l)
             startActivity(intent)
+            finish()
         }
 
 

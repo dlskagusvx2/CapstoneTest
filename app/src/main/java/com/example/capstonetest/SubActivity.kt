@@ -14,7 +14,10 @@ class SubActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+        val intent = Intent(this@SubActivity, ProcessActivity::class.java)
+
         binding.mButton.setOnClickListener {
+            startActivity(intent)
             finish()
         }
         val url = intent.getStringExtra("url")
