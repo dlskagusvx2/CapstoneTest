@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private lateinit var webView: WebView
-    val apiKey = ""// api 키 입력해야함
+    val apiKey = "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"// api 키 입력해야함
     val endpoint = "https://api.openai.com/v1/chat/completions"
     val model = "gpt-3.5-turbo" // 사용할 모델 (GPT-3 Turbo)
 
@@ -176,7 +176,7 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private fun askToMultiChatGPT(qList: List<String>) {
+    private fun askToMultiChatGPT(qList: List<String>){
         Toast.makeText(this@MainActivity,"askToMultiChatGPT함수 시작",Toast.LENGTH_SHORT).show()
         val client = OkHttpClient.Builder()
             .connectTimeout(300, TimeUnit.SECONDS) // 연결 시간 초과 설정
@@ -212,7 +212,7 @@ class MainActivity : AppCompatActivity() {
 
             deferredResponses.awaitAll()
         }
-        binding.webView.visibility = GONE
+
 
         var responseList = mutableListOf<String>()
 
@@ -227,8 +227,9 @@ class MainActivity : AppCompatActivity() {
             responseList.add(content)
 
         }
-
         binding.textbox.text = responseList.joinToString("")
+        binding.webView.visibility = GONE
+
 
     }
 
