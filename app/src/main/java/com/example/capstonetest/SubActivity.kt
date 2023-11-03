@@ -2,6 +2,7 @@ package com.example.capstonetest
 
 import android.content.Intent
 import android.icu.text.SimpleDateFormat
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,11 +12,11 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.capstonetest.databinding.ActivitySubBinding
 import com.example.capstonetest.databinding.ItemRecyclerBinding
-import com.ramotion.foldingcell.FoldingCell
 
 class SubActivity : AppCompatActivity() {
     private val binding by lazy {
@@ -82,6 +83,7 @@ class CustomAdapter(val listData:MutableList<adapter>) : RecyclerView.Adapter<Cu
 
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
     override fun onBindViewHolder(holder: Holder, position: Int) {
         //데이터 꺼내기
         val adapter = listData.get(position)
@@ -101,6 +103,7 @@ class CustomAdapter(val listData:MutableList<adapter>) : RecyclerView.Adapter<Cu
             }
         }
 
+        @RequiresApi(Build.VERSION_CODES.N)
         fun setMemo(adapter: adapter){
             currentMemo = adapter
             with(binding){

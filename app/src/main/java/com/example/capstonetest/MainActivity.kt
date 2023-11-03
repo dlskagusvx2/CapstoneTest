@@ -114,6 +114,7 @@ class MainActivity : AppCompatActivity() {
         webView.addJavascriptInterface(this, "android")
     }
 
+    /*
     private fun askToChatGPT(q: String) {
         Toast.makeText(this@MainActivity,"askToChatGPT함수 시작",Toast.LENGTH_SHORT).show()
         val messagesArray = JsonArray()
@@ -174,7 +175,7 @@ class MainActivity : AppCompatActivity() {
         }.start()
 
 
-    }
+    } */
 
     private fun askToMultiChatGPT(qList: List<String>){
         Toast.makeText(this@MainActivity,"askToMultiChatGPT함수 시작",Toast.LENGTH_SHORT).show()
@@ -279,6 +280,7 @@ class MainActivity : AppCompatActivity() {
         return result
     }
 
+    /*
     //토큰 제한 해결 메서드
     private fun sliceToken(tkn:String){
         /*
@@ -293,18 +295,7 @@ class MainActivity : AppCompatActivity() {
         }else{
             askToMultiChatGPT(substringToken(tkn))
         }
-    }
-
-    private fun lastSummary(){
-        val postResult = binding.textbox.text.toString()
-        Toast.makeText(this@MainActivity,"lastSummary함수 시작 ${postResult.length}",Toast.LENGTH_SHORT).show()
-        Log.d("aaa","lastSummary함수 시작 ${postResult.length}")
-        Log.d("aaa", "${postResult}")
-        binding.textbox.text = "텍스트가 여기에 표시됩니다."
-        sliceToken(postResult)
-    }
-
-
+    }*/
 
     // JavaScript 코드 실행 메서드
     private fun runJavaScriptCode(code: String) {
