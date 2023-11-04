@@ -9,19 +9,23 @@
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
+        android:label="Chat-gpt를 이용한 문서요약"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.CapstoneTest"
         tools:targetApi="34">
         <activity
+            android:name=".textActivity"
+            android:exported="false"
+            android:label="문서 내용"/>
+        <activity
             android:name=".MainActivity"
             android:exported="false"
-            android:label="Main"/>
+            android:label="요약중" />
         <activity
             android:name=".SubActivity"
             android:exported="false"
-            android:label="@string/title_activity_sub"
+            android:label="저장된 문서"
             android:theme="@style/Theme.CapstoneTest" />
         <activity
             android:name=".ProcessActivity"
