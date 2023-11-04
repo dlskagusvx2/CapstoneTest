@@ -98,8 +98,12 @@ class CustomAdapter(val listData:MutableList<adapter>) : RecyclerView.Adapter<Cu
 
         init {
             binding.root.setOnClickListener{
+                /*
                 val title = binding.textTitle.text
-                Toast.makeText(binding.root.context, "${currentMemo.title}",Toast.LENGTH_SHORT).show()
+                Toast.makeText(binding.root.context, "${currentMemo.title}",Toast.LENGTH_SHORT).show()*/
+                val intent = Intent(binding.root.context, textActivity::class.java)
+                intent.putExtra("title", currentMemo.title) // 선택한 아이템의 제목 정보를 인텐트에 추가
+                binding.root.context.startActivity(intent)
             }
         }
 
@@ -115,6 +119,8 @@ class CustomAdapter(val listData:MutableList<adapter>) : RecyclerView.Adapter<Cu
                 textDate.text= formattedData
             }
         }
+
+
 
     }
 }

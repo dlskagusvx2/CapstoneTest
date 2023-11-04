@@ -1,5 +1,6 @@
 package com.example.capstonetest
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -112,6 +113,12 @@ class MainActivity : AppCompatActivity() {
 
         // WebView에서 JavaScript 코드 실행 결과를 처리하는 인터페이스
         webView.addJavascriptInterface(this, "android")
+
+        binding.mButton.setOnClickListener {
+            val intent = Intent(this@MainActivity, SubActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
     }
 
     /*
