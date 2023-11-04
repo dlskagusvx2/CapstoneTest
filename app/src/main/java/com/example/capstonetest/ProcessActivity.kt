@@ -16,11 +16,16 @@ class ProcessActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         val intent = Intent(this@ProcessActivity,MainActivity::class.java)
-        intent.putExtra("url",l)
+        val aaa = Intent(this@ProcessActivity, SubActivity::class.java)
+
+        binding.button1.setOnClickListener {
+            startActivity(aaa)
+        }
+        //intent.putExtra("url",l)
         binding.triangleButton.setOnClickListener {
             startActivity(intent)
             finish()
         }
-        val url = intent.getStringExtra("url")
+        //val url = intent.getStringExtra("url")
     }
 }

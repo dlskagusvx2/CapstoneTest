@@ -1,5 +1,6 @@
 package com.example.capstonetest
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -13,6 +14,9 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import com.example.capstonetest.databinding.ActivityMainBinding
+import com.example.capstonetest.db.AppDatabase
+import com.example.capstonetest.db.SummaryDao
+import com.example.capstonetest.db.SummaryEntity
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
@@ -41,6 +45,14 @@ class MainActivity : AppCompatActivity() {
     val apiKey = ""// api 키 입력해야함
     val endpoint = "https://api.openai.com/v1/chat/completions"
     val model = "gpt-3.5-turbo" // 사용할 모델 (GPT-3 Turbo)
+
+    var scriptSummary: String = ""
+
+    lateinit var db: AppDatabase
+    lateinit var summaryDao: SummaryDao
+    /*
+    val db:AppDatabase = AppDatabase.getInstance(this)!!
+    val SummaryDao: SummaryDao = db.getSummaryDao()*/
 
 
 
@@ -112,6 +124,21 @@ class MainActivity : AppCompatActivity() {
 
         // WebView에서 JavaScript 코드 실행 결과를 처리하는 인터페이스
         webView.addJavascriptInterface(this, "android")
+
+        db = AppDatabase.getInstance(this)!!
+        summaryDao = db.getSummaryDao()
+        val intent = Intent(this@MainActivity,SubActivity::class.java)
+
+
+        binding.mButton.setOnClickListener {
+            //SummaryDao.insertHabit(SummaryEntity(null,"title",scriptSummary))
+            Thread{
+                summaryDao.insertSummary(SummaryEntity(null,"title","스크립트"))
+            }.start()
+
+            startActivity(intent)
+            finish()
+        }
     }
 
     /*
@@ -228,6 +255,7 @@ class MainActivity : AppCompatActivity() {
             responseList.add(content)
 
         }
+        scriptSummary = responseList.joinToString("")
         binding.textbox.text = responseList.joinToString("")
         binding.webView.visibility = GONE
 

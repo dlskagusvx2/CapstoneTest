@@ -1,8 +1,9 @@
 package com.example.capstonetest.db
 
 import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
 import androidx.room.Query
-import androidx.room.*
 
 @Dao
 interface SummaryDao {
@@ -10,11 +11,9 @@ interface SummaryDao {
     fun getAll():List<SummaryEntity>
 
     @Insert
-    fun insertHabit(todo: SummaryEntity)
+    fun insertSummary(todo: SummaryEntity)
 
     @Delete
-    fun deleteHabit(todo: SummaryEntity)
+    fun deleteSummary(todo: SummaryEntity)
 
-    @Update
-    fun updateHabit(todo: SummaryEntity)
 }

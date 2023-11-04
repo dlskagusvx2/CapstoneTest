@@ -14,7 +14,7 @@ abstract class AppDatabase: RoomDatabase(){
         val databaseName = "db_Summary"
         var appDatabase : AppDatabase? = null
 
-        fun getInstance(context: Context):AppDatabase?{
+        fun getInstance(context: Context) :AppDatabase?{
             if (appDatabase == null){
                 appDatabase = Room.databaseBuilder(context,
                     AppDatabase::class.java,

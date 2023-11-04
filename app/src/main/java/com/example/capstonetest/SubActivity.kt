@@ -17,20 +17,29 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.capstonetest.databinding.ActivitySubBinding
 import com.example.capstonetest.databinding.ItemRecyclerBinding
+import com.example.capstonetest.db.AppDatabase
+import com.example.capstonetest.db.SummaryDao
+import com.example.capstonetest.db.SummaryEntity
 
 class SubActivity : AppCompatActivity() {
     private val binding by lazy {
         ActivitySubBinding.inflate(layoutInflater)
     }
+    private lateinit var db:AppDatabase
+    private lateinit var SummaryDao:SummaryDao
+    private lateinit var SummaryList: ArrayList<SummaryEntity>
+    private lateinit var adapter: CustomAdapter
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
+        /*
         val data = loadData()
         val customAdapter = CustomAdapter(data)
         binding.recyclerView.adapter = customAdapter
-        binding.recyclerView.layoutManager = LinearLayoutManager(this)
+        binding.recyclerView.layoutManager = LinearLayoutManager(this)*/
 
         val intent = Intent(this@SubActivity, ProcessActivity::class.java)
 
@@ -59,7 +68,30 @@ class SubActivity : AppCompatActivity() {
             finish()
         }*/
 
+        db = AppDatabase.getInstance(this)!!
+        SummaryDao = db.getSummaryDao()
+        getAllSummaryList()
 
+    }
+
+    override fun onRestart() {
+        super.onRestart()
+        getAllSummaryList()
+    }
+
+    private fun getAllSummaryList(){
+        Thread{
+            SummaryList = ArrayList(SummaryDao.getAll())
+            setRecyclerView()
+        }.start()
+    }
+
+    private fun setRecyclerView(){
+        runOnUiThread {
+            adapter = CustomAdapter(SummaryList)
+            binding.recyclerView.adapter = adapter
+            binding.recyclerView.layoutManager = LinearLayoutManager(this)
+        }
     }
 
     //임시 데이터 생성
@@ -75,34 +107,45 @@ class SubActivity : AppCompatActivity() {
     }
 }
 
-class CustomAdapter(val listData:MutableList<adapter>) : RecyclerView.Adapter<CustomAdapter.Holder>(){
+class CustomAdapter(val SummaryList:ArrayList<SummaryEntity>) : RecyclerView.Adapter<CustomAdapter.Holder>(){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
-        val binding = ItemRecyclerBinding.inflate(LayoutInflater.from(parent.context),parent,false)
+        val binding = ItemRecyclerBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,false)
         return Holder(binding)
 
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onBindViewHolder(holder: Holder, position: Int) {
+        /*
         //데이터 꺼내기
         val adapter = listData.get(position)
         //데이터 전달
-        holder.setMemo(adapter)
+        //holder.setMemo(adapter)
+        */
+        val SummaryData = SummaryList[position]
+
+        holder.summaryTitle.text = SummaryData.title
+        holder.summaryContent.text = SummaryData.summary
     }
 
-    override fun getItemCount() = listData.size
+    override fun getItemCount() = SummaryList.size
 
-    inner class Holder(val binding: ItemRecyclerBinding):RecyclerView.ViewHolder(binding.root){
-        lateinit var currentMemo:adapter
+    inner class Holder(binding: ItemRecyclerBinding):RecyclerView.ViewHolder(binding.root){
+        var summaryTitle = binding.summaryTitle
+        var summaryContent = binding.content
+        /*lateinit var currentMemo:adapter
 
         init {
             binding.root.setOnClickListener{
                 val title = binding.textTitle.text
                 Toast.makeText(binding.root.context, "${currentMemo.title}",Toast.LENGTH_SHORT).show()
             }
-        }
+        }*/
 
+        /*
         @RequiresApi(Build.VERSION_CODES.N)
         fun setMemo(adapter: adapter){
             currentMemo = adapter
@@ -114,7 +157,7 @@ class CustomAdapter(val listData:MutableList<adapter>) : RecyclerView.Adapter<Cu
                 val formattedData = sdf.format(adapter.timestamp)
                 textDate.text= formattedData
             }
-        }
+        }*/
 
     }
 }
