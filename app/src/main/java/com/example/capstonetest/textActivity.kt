@@ -19,7 +19,7 @@ class textActivity : AppCompatActivity() {
         setContentView(binding.root)
 
 
-        val title = intent.getStringExtra("title")
+        //val title = intent.getStringExtra("title")
         val intent = Intent(this@textActivity, SubActivity::class.java)
         binding.mButton.setOnClickListener {
 

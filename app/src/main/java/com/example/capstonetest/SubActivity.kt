@@ -136,18 +136,20 @@ class CustomAdapter(val SummaryList:ArrayList<SummaryEntity>) : RecyclerView.Ada
     inner class Holder(binding: ItemRecyclerBinding):RecyclerView.ViewHolder(binding.root){
         var summaryTitle = binding.summaryTitle
         var summaryContent = binding.content
-        /*lateinit var currentMemo:adapter
+        //lateinit var currentMemo:adapter
 
         init {
             binding.root.setOnClickListener{
                 /*
                 val title = binding.textTitle.text
                 Toast.makeText(binding.root.context, "${currentMemo.title}",Toast.LENGTH_SHORT).show()*/
+
+
                 val intent = Intent(binding.root.context, textActivity::class.java)
-                intent.putExtra("title", currentMemo.title) // 선택한 아이템의 제목 정보를 인텐트에 추가
+                //intent.putExtra("title", currentMemo.title) // 선택한 아이템의 제목 정보를 인텐트에 추가
                 binding.root.context.startActivity(intent)
             }
-        }*/
+        }
 
         /*
         @RequiresApi(Build.VERSION_CODES.N)
