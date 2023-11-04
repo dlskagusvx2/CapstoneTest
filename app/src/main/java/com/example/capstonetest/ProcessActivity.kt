@@ -12,6 +12,7 @@ class ProcessActivity : AppCompatActivity() {
     }
     val l = "https://www.youtube.com/watch?v=If95bdcptEM"
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
