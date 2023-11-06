@@ -1,5 +1,6 @@
 package com.example.capstonetest
 
+import android.content.DialogInterface
 import android.content.Intent
 import android.icu.text.SimpleDateFormat
 import android.os.Build
@@ -13,6 +14,7 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.capstonetest.databinding.ActivitySubBinding
@@ -21,7 +23,7 @@ import com.example.capstonetest.db.AppDatabase
 import com.example.capstonetest.db.SummaryDao
 import com.example.capstonetest.db.SummaryEntity
 
-class SubActivity : AppCompatActivity() {
+class SubActivity : AppCompatActivity(),OnItemLongClickListener {
     private val binding by lazy {
         ActivitySubBinding.inflate(layoutInflater)
     }
@@ -88,7 +90,7 @@ class SubActivity : AppCompatActivity() {
 
     private fun setRecyclerView(){
         runOnUiThread {
-            adapter = CustomAdapter(SummaryList)
+            adapter = CustomAdapter(SummaryList,this)
             binding.recyclerView.adapter = adapter
             binding.recyclerView.layoutManager = LinearLayoutManager(this)
         }
@@ -105,9 +107,34 @@ class SubActivity : AppCompatActivity() {
         }
         return memoList
     }
+
+    override fun onLongClick(position: Int) {
+        val builder = AlertDialog.Builder(this)
+
+        builder.setTitle("액션 선택")
+            .setNegativeButton("삭제",DialogInterface.OnClickListener { dialog, which ->
+                deleteSummary(position)
+            })
+            .setPositiveButton("취소",DialogInterface.OnClickListener { dialog, which ->
+
+            })
+        builder.show()
+
+    }
+
+    private fun deleteSummary(position: Int){
+        Thread{
+            SummaryDao.deleteSummary(SummaryList[position])
+            SummaryList.removeAt(position)
+            runOnUiThread{
+                Toast.makeText(this,"삭제되었습니다.", Toast.LENGTH_SHORT).show()
+            }
+        }.start()
+    }
 }
 
-class CustomAdapter(val SummaryList:ArrayList<SummaryEntity>) : RecyclerView.Adapter<CustomAdapter.Holder>(){
+class CustomAdapter(val SummaryList:ArrayList<SummaryEntity>,
+                    private val listener: OnItemLongClickListener) : RecyclerView.Adapter<CustomAdapter.Holder>(){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
         val binding = ItemRecyclerBinding.inflate(
@@ -129,6 +156,10 @@ class CustomAdapter(val SummaryList:ArrayList<SummaryEntity>) : RecyclerView.Ada
 
         holder.summaryTitle.text = SummaryData.title
         holder.summaryContent.text = SummaryData.summary
+        holder.root.setOnLongClickListener{
+            listener.onLongClick(position)
+            false
+        }
     }
 
     override fun getItemCount() = SummaryList.size
@@ -136,6 +167,7 @@ class CustomAdapter(val SummaryList:ArrayList<SummaryEntity>) : RecyclerView.Ada
     inner class Holder(binding: ItemRecyclerBinding):RecyclerView.ViewHolder(binding.root){
         var summaryTitle = binding.summaryTitle
         var summaryContent = binding.content
+        var root = binding.root
         //lateinit var currentMemo:adapter
 
         init {
