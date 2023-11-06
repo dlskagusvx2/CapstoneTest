@@ -146,7 +146,9 @@ class CustomAdapter(val SummaryList:ArrayList<SummaryEntity>) : RecyclerView.Ada
 
 
                 val intent = Intent(binding.root.context, textActivity::class.java)
-                //intent.putExtra("title", currentMemo.title) // 선택한 아이템의 제목 정보를 인텐트에 추가
+                // 선택한 아이템의 제목 정보를 인텐트에 추가
+                intent.putExtra("title",summaryTitle.text)
+                intent.putExtra("content",summaryContent.text)
                 binding.root.context.startActivity(intent)
             }
         }
