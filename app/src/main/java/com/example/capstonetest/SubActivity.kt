@@ -37,12 +37,6 @@ class SubActivity : AppCompatActivity(),OnItemLongClickListener {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        /*
-        val data = loadData()
-        val customAdapter = CustomAdapter(data)
-        binding.recyclerView.adapter = customAdapter
-        binding.recyclerView.layoutManager = LinearLayoutManager(this)*/
-
         val intent = Intent(this@SubActivity, ProcessActivity::class.java)
 
 
@@ -50,29 +44,16 @@ class SubActivity : AppCompatActivity(),OnItemLongClickListener {
             startActivity(intent)
             finish()
         }
-        /*
-        val intent = Intent(this@SubActivity, ProcessActivity::class.java)
 
-        val linearLayout = findViewById<LinearLayout>(R.id.linearLayout)
-        val addButton = findViewById<Button>(R.id.mButton)
-
-        addButton.setOnClickListener(object : View.OnClickListener {
-            override fun onClick(view: View) {
-                // 새로운 EditText를 생성합니다.
-                val editText = EditText(this@SubActivity)
-                // 생성된 EditText를 LinearLayout에 추가합니다.
-                linearLayout.addView(editText)
-            }
-        })
-
-        binding.mButton.setOnClickListener {
-            startActivity(intent)
-            finish()
-        }*/
 
         db = AppDatabase.getInstance(this)!!
         SummaryDao = db.getSummaryDao()
         getAllSummaryList()
+
+        binding.swipe.setOnRefreshListener {
+            getAllSummaryList()
+            binding.swipe.isRefreshing = false
+        }
 
     }
 
@@ -130,6 +111,7 @@ class SubActivity : AppCompatActivity(),OnItemLongClickListener {
                 Toast.makeText(this,"삭제되었습니다.", Toast.LENGTH_SHORT).show()
             }
         }.start()
+        getAllSummaryList()
     }
 }
 
