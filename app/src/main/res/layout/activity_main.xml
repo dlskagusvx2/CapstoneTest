@@ -16,17 +16,17 @@
 
     <TextView
         android:id="@+id/textbox"
-        android:layout_width="343dp"
-        android:layout_height="442dp"
+        android:layout_width="345dp"
+        android:layout_height="236dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="36dp"
         android:layout_marginEnd="16dp"
         android:gravity="start"
+        android:scrollbars="vertical"
         android:text="텍스트가 여기에 표시됩니다."
         android:textColor="@android:color/black"
         android:textSize="16sp"
         android:visibility="visible"
-        android:scrollbars="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.492"
         app:layout_constraintRight_toRightOf="parent"
@@ -38,13 +38,12 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="580dp"
+        android:layout_marginTop="96dp"
         android:layout_marginEnd="16dp"
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/textbox" />
 
     <Button
         android:id="@+id/mButton"
@@ -53,7 +52,9 @@
         android:text="화면전환"
         app:layout_constraintBottom_toTopOf="@+id/webView"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textbox" />
+        app:layout_constraintTop_toBottomOf="@+id/textbox"
+        app:layout_constraintVertical_bias="0.485" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

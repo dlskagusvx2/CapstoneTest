@@ -80,7 +80,6 @@ class MainActivity : AppCompatActivity() {
                     runJavaScriptCode(
                         """
                 (function() {
-                
                     // id가 description-inner인 요소를 찾아서 클릭
                     var descriptionInner = document.getElementById('description-inner');
                     if (descriptionInner) {
@@ -91,6 +90,10 @@ class MainActivity : AppCompatActivity() {
                     buttonElement.click();
                     
                     setTimeout(function() {
+                        // 영상의 제목 추출
+                        var titleBox = document.getElementById('above-the-fold').querySelector('h1');
+                        var titleText = titleBox.textContent||titleBox.innerText;
+                        
                         // segment-text.style-scope ytd-transcript-segment-renderer 요소를 찾아서 추출
                         var elementsInterval = setInterval(function() {
                             var element = document.getElementById('segments-container');
@@ -105,7 +108,7 @@ class MainActivity : AppCompatActivity() {
                                     var allText = textContents.join('');
                                     var pattern = /\b\d{1,3}:\d{2}\b/g;
                                     var modifiedString = allText.replace(pattern, '').replace(/\n/g, '');
-                                    window.android.onTextExtracted(modifiedString); // 결과를 Android 앱에 전달
+                                    window.android.onTextExtracted(titleText,modifiedString); // 결과를 Android 앱에 전달
                                     clearInterval(elementsInterval); // setInterval 중지
                                 }
                             }
@@ -115,12 +118,13 @@ class MainActivity : AppCompatActivity() {
                 })();
                 """
                     )
-                }, 3000) // 5초 지연
+                }, 3000) // 3초 지연
             }
         }
 
         // 웹 페이지 로드
-        webView.loadUrl("https://www.youtube.com/watch?v=Bgq2Pr_xYg4")
+        //스크립트의 언어를 한국어를 디폴트로 설정하기 위해 URL에 ?cc_lang_pref=ko&cc_load_policy=1 추가
+        webView.loadUrl("https://www.youtube.com/watch?v=Bgq2Pr_xYg4?cc_lang_pref=ko&cc_load_policy=1")
 
         // WebView에서 JavaScript 코드 실행 결과를 처리하는 인터페이스
         webView.addJavascriptInterface(this, "android")
@@ -264,8 +268,8 @@ class MainActivity : AppCompatActivity() {
 
     // JavaScript에서 호출할 메서드
     @JavascriptInterface
-    fun onTextExtracted(result: String) {
-        //sliceToken(result)
+    fun onTextExtracted(title:String,result: String) {
+        Toast.makeText(this,title,Toast.LENGTH_LONG).show()
         askToMultiChatGPT(substringToken(result))
     }
 
@@ -308,22 +312,6 @@ class MainActivity : AppCompatActivity() {
         return result
     }
 
-    /*
-    //토큰 제한 해결 메서드
-    private fun sliceToken(tkn:String){
-        /*
-        if(binding.webView.isVisible){
-            binding.webView.visibility = GONE
-        }*/
-
-        Toast.makeText(this@MainActivity,"sliceToken함수 시작 ${tkn.length}",Toast.LENGTH_SHORT).show()
-        Log.d("aaa","sliceToken함수 시작 ${tkn.length}")
-        if(getTokenSize(tkn) <= 4000){
-            askToChatGPT(tkn)
-        }else{
-            askToMultiChatGPT(substringToken(tkn))
-        }
-    }*/
 
     // JavaScript 코드 실행 메서드
     private fun runJavaScriptCode(code: String) {
