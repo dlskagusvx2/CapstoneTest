@@ -90,7 +90,7 @@ class SubActivity : AppCompatActivity(),OnItemLongClickListener {
     override fun onLongClick(position: Int) {
         val builder = AlertDialog.Builder(this)
 
-        builder.setTitle("액션 선택")
+        builder.setTitle("삭제하십겠습니까?")
             .setNegativeButton("삭제",DialogInterface.OnClickListener { dialog, which ->
                 deleteSummary(position)
             })
