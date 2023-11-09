@@ -117,6 +117,7 @@ class SubActivity : AppCompatActivity(),OnItemLongClickListener {
 
 class CustomAdapter(val SummaryList:ArrayList<SummaryEntity>,
                     private val listener: OnItemLongClickListener) : RecyclerView.Adapter<CustomAdapter.Holder>(){
+    var content:String = ""
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
         val binding = ItemRecyclerBinding.inflate(
@@ -137,7 +138,8 @@ class CustomAdapter(val SummaryList:ArrayList<SummaryEntity>,
         val SummaryData = SummaryList[position]
 
         holder.summaryTitle.text = SummaryData.title
-        holder.summaryContent.text = SummaryData.summary
+        //holder.summaryContent.text = SummaryData.summary
+        content = SummaryData.summary
         holder.root.setOnLongClickListener{
             listener.onLongClick(position)
             false
@@ -148,7 +150,7 @@ class CustomAdapter(val SummaryList:ArrayList<SummaryEntity>,
 
     inner class Holder(binding: ItemRecyclerBinding):RecyclerView.ViewHolder(binding.root){
         var summaryTitle = binding.summaryTitle
-        var summaryContent = binding.content
+        //var summaryContent = binding.content
         var root = binding.root
         //lateinit var currentMemo:adapter
 
@@ -162,7 +164,7 @@ class CustomAdapter(val SummaryList:ArrayList<SummaryEntity>,
                 val intent = Intent(binding.root.context, textActivity::class.java)
                 // 선택한 아이템의 제목 정보를 인텐트에 추가
                 intent.putExtra("title",summaryTitle.text)
-                intent.putExtra("content",summaryContent.text)
+                intent.putExtra("content",content)
                 binding.root.context.startActivity(intent)
             }
         }

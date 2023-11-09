@@ -47,6 +47,7 @@ class MainActivity : AppCompatActivity() {
     val model = "gpt-3.5-turbo" // 사용할 모델 (GPT-3 Turbo)
 
     var scriptSummary: String = ""
+    var scriptTitle:String = ""
 
     lateinit var db: AppDatabase
     lateinit var summaryDao: SummaryDao
@@ -108,6 +109,7 @@ class MainActivity : AppCompatActivity() {
                                     var allText = textContents.join('');
                                     var pattern = /\b\d{1,3}:\d{2}\b/g;
                                     var modifiedString = allText.replace(pattern, '').replace(/\n/g, '');
+                                    titleText = titleText.replace(pattern, '').replace(/\n/g, '');
                                     window.android.onTextExtracted(titleText,modifiedString); // 결과를 Android 앱에 전달
                                     clearInterval(elementsInterval); // setInterval 중지
                                 }
@@ -135,9 +137,10 @@ class MainActivity : AppCompatActivity() {
 
 
         binding.mButton.setOnClickListener {
-            //SummaryDao.insertHabit(SummaryEntity(null,"title",scriptSummary))
+
             Thread{
-                summaryDao.insertSummary(SummaryEntity(null,"title","스크립트"))
+                summaryDao.insertSummary(SummaryEntity(null,scriptTitle,scriptSummary))
+                //summaryDao.insertSummary(SummaryEntity(null,"title","스크립트"))
             }.start()
 
             startActivity(intent)
@@ -208,7 +211,7 @@ class MainActivity : AppCompatActivity() {
 
     } */
 
-    private fun askToMultiChatGPT(qList: List<String>){
+    private fun askToMultiChatGPT(title:String,qList: List<String>){
         Toast.makeText(this@MainActivity,"askToMultiChatGPT함수 시작",Toast.LENGTH_SHORT).show()
         val client = OkHttpClient.Builder()
             .connectTimeout(300, TimeUnit.SECONDS) // 연결 시간 초과 설정
@@ -222,7 +225,7 @@ class MainActivity : AppCompatActivity() {
                     val messagesArray = JsonArray()
                     val message = JsonObject()
                     message.addProperty("role", "user")
-                    message.addProperty("content", "${q} 유튜브 영상 스크립트인데 요약해줘.") // 사용자 메시지를 추가
+                    message.addProperty("content", "${title}이라는 제목의 ${q} 유튜브 영상 스크립트인데 요약해줘.") // 사용자 메시지를 추가
                     messagesArray.add(message)
 
                     val jsonMediaType = "application/json; charset=utf-8".toMediaType()
@@ -270,7 +273,8 @@ class MainActivity : AppCompatActivity() {
     @JavascriptInterface
     fun onTextExtracted(title:String,result: String) {
         Toast.makeText(this,title,Toast.LENGTH_LONG).show()
-        askToMultiChatGPT(substringToken(result))
+        scriptTitle = title.trim()
+        askToMultiChatGPT(title,substringToken(result))
     }
 
     private fun substringToken(t:String): MutableList<String> {
