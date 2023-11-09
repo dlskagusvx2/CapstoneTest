@@ -42,7 +42,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private lateinit var webView: WebView
-    val apiKey = ""// api 키 입력해야함
+    val apiKey = "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"// api 키 입력해야함
     val endpoint = "https://api.openai.com/v1/chat/completions"
     val model = "gpt-3.5-turbo" // 사용할 모델 (GPT-3 Turbo)
 
@@ -126,7 +126,7 @@ class MainActivity : AppCompatActivity() {
 
         // 웹 페이지 로드
         //스크립트의 언어를 한국어를 디폴트로 설정하기 위해 URL에 ?cc_lang_pref=ko&cc_load_policy=1 추가
-        webView.loadUrl("https://www.youtube.com/watch?v=Bgq2Pr_xYg4?cc_lang_pref=ko&cc_load_policy=1")
+        webView.loadUrl("https://www.youtube.com/watch?v=u42Afwnl4uQ?cc_lang_pref=ko&cc_load_policy=1")
 
         // WebView에서 JavaScript 코드 실행 결과를 처리하는 인터페이스
         webView.addJavascriptInterface(this, "android")
