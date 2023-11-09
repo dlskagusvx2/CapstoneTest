@@ -10,32 +10,51 @@
         android:id="@+id/mButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="490dp"
-        android:layout_marginEnd="162dp"
-        android:text="화면전환"
+        android:layout_marginTop="440dp"
         android:background="@drawable/buttons"
+        android:text="화면전환"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textTitle"
         tools:ignore="MissingConstraints" />
 
     <TextView
         android:id="@+id/textTitle"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="53dp"
-        android:layout_marginEnd="182dp"
+        android:layout_width="330dp"
+        android:layout_height="64dp"
+        android:layout_marginTop="60dp"
+        android:lineSpacingExtra="10dp"
         android:text="TextView"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="3px"
+        android:background="@color/black"
+        app:layout_constraintBottom_toTopOf="@+id/textContent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textTitle"
+        app:layout_constraintVertical_bias="0.285" />
 
     <TextView
         android:id="@+id/textContent"
-        android:layout_width="298dp"
-        android:layout_height="403dp"
+        android:layout_width="287dp"
+        android:layout_height="398dp"
         android:layout_marginTop="36dp"
-        android:layout_marginEnd="56dp"
+        android:lineSpacingExtra="10dp"
         android:scrollbars="vertical"
         android:text="TextView"
+        android:textColor="@color/black"
+        android:textSize="15dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textTitle" />
 </androidx.constraintlayout.widget.ConstraintLayout>
