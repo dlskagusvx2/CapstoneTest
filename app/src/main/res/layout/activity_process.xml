@@ -1,37 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
     android:padding="16dp"
+    android:background="@color/black"
     tools:context=".ProcessActivity">
 
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="386dp"
+        android:layout_height="192dp"
+        android:layout_margin="10dp"
+        android:layout_marginBottom="115dp"
+        android:src="@drawable/openai"
+        app:layout_constraintBottom_toTopOf="@+id/urlEditText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/urlEditText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="316dp"
         android:layout_weight="1"
         android:hint="URL을 입력하세요"
         android:inputType="textUri"
-        android:padding="8dp" />
+        android:padding="8dp"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white"
+        app:layout_constraintEnd_toStartOf="@+id/triangleButton"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/triangleButton"
         android:layout_width="56dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="60dp"
+        android:layout_marginEnd="12dp"
         android:background="@drawable/send"
+        android:backgroundTint="@color/white"
         android:padding="16dp"
-
-        />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
     <Button
         android:id="@+id/button1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginTop="38dp"
         android:layout_weight="1"
-        android:text="Button" />
+        android:text="Button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/urlEditText" />
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
