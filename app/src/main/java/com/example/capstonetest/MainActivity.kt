@@ -1,6 +1,7 @@
 package com.example.capstonetest
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -11,6 +12,7 @@ import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import com.example.capstonetest.databinding.ActivityMainBinding
@@ -33,6 +35,7 @@ import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import java.io.IOException
+import java.time.LocalDate
 import java.util.concurrent.TimeUnit
 
 
@@ -57,6 +60,7 @@ class MainActivity : AppCompatActivity() {
 
 
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
@@ -139,7 +143,7 @@ class MainActivity : AppCompatActivity() {
         binding.mButton.setOnClickListener {
 
             Thread{
-                summaryDao.insertSummary(SummaryEntity(null,scriptTitle,scriptSummary))
+                summaryDao.insertSummary(SummaryEntity(null,scriptTitle,scriptSummary,LocalDate.now().toString()))
                 //summaryDao.insertSummary(SummaryEntity(null,"title","스크립트"))
             }.start()
 

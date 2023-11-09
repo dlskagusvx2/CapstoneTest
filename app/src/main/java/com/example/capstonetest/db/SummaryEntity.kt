@@ -8,5 +8,6 @@ import androidx.room.PrimaryKey
 data class SummaryEntity (
     @PrimaryKey(autoGenerate = true) var id: Int? = null,
     @ColumnInfo(name = "title") val title:String,
-    @ColumnInfo(name = "summary") val summary:String
+    @ColumnInfo(name = "summary") val summary:String,
+    @ColumnInfo(name = "date") val date:String
 )

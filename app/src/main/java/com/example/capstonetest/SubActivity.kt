@@ -92,10 +92,10 @@ class SubActivity : AppCompatActivity(),OnItemLongClickListener {
         val builder = AlertDialog.Builder(this)
 
         builder.setTitle("삭제하십겠습니까?")
-            .setNegativeButton("삭제",DialogInterface.OnClickListener { dialog, which ->
+            .setPositiveButton("삭제",DialogInterface.OnClickListener { dialog, which ->
                 deleteSummary(position)
             })
-            .setPositiveButton("취소",DialogInterface.OnClickListener { dialog, which ->
+            .setNegativeButton("취소",DialogInterface.OnClickListener { dialog, which ->
 
             })
         builder.show()
@@ -139,6 +139,7 @@ class CustomAdapter(val SummaryList:ArrayList<SummaryEntity>,
 
         holder.summaryTitle.text = SummaryData.title
         holder.summaryContent.text = SummaryData.summary
+        holder.summaryDate.text = SummaryData.date
         holder.root.setOnLongClickListener{
             listener.onLongClick(position)
             false
@@ -151,6 +152,7 @@ class CustomAdapter(val SummaryList:ArrayList<SummaryEntity>,
         var summaryTitle = binding.summaryTitle
         var summaryContent = binding.content
         var root = binding.root
+        var summaryDate = binding.textDate
 
         init {
             binding.root.setOnClickListener{
