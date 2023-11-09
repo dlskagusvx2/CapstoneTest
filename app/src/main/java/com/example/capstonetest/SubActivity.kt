@@ -31,6 +31,7 @@ class SubActivity : AppCompatActivity(),OnItemLongClickListener {
     private lateinit var SummaryDao:SummaryDao
     private lateinit var SummaryList: ArrayList<SummaryEntity>
     private lateinit var adapter: CustomAdapter
+    
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
