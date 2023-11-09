@@ -39,12 +39,10 @@ class SubActivity : AppCompatActivity(),OnItemLongClickListener {
 
         val intent = Intent(this@SubActivity, ProcessActivity::class.java)
 
-
         binding.mButton.setOnClickListener {
             startActivity(intent)
             finish()
         }
-
 
         db = AppDatabase.getInstance(this)!!
         SummaryDao = db.getSummaryDao()
@@ -118,6 +116,7 @@ class SubActivity : AppCompatActivity(),OnItemLongClickListener {
 class CustomAdapter(val SummaryList:ArrayList<SummaryEntity>,
                     private val listener: OnItemLongClickListener) : RecyclerView.Adapter<CustomAdapter.Holder>(){
     var content:String = ""
+    //lateinit var contentList:ArrayList<String>
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
         val binding = ItemRecyclerBinding.inflate(
@@ -138,8 +137,7 @@ class CustomAdapter(val SummaryList:ArrayList<SummaryEntity>,
         val SummaryData = SummaryList[position]
 
         holder.summaryTitle.text = SummaryData.title
-        //holder.summaryContent.text = SummaryData.summary
-        content = SummaryData.summary
+        holder.summaryContent.text = SummaryData.summary
         holder.root.setOnLongClickListener{
             listener.onLongClick(position)
             false
@@ -150,40 +148,18 @@ class CustomAdapter(val SummaryList:ArrayList<SummaryEntity>,
 
     inner class Holder(binding: ItemRecyclerBinding):RecyclerView.ViewHolder(binding.root){
         var summaryTitle = binding.summaryTitle
-        //var summaryContent = binding.content
+        var summaryContent = binding.content
         var root = binding.root
-        //lateinit var currentMemo:adapter
 
         init {
             binding.root.setOnClickListener{
-                /*
-                val title = binding.textTitle.text
-                Toast.makeText(binding.root.context, "${currentMemo.title}",Toast.LENGTH_SHORT).show()*/
-
-
                 val intent = Intent(binding.root.context, textActivity::class.java)
                 // 선택한 아이템의 제목 정보를 인텐트에 추가
                 intent.putExtra("title",summaryTitle.text)
-                intent.putExtra("content",content)
+                intent.putExtra("content",summaryContent.text)
                 binding.root.context.startActivity(intent)
             }
         }
-
-        /*
-        @RequiresApi(Build.VERSION_CODES.N)
-        fun setMemo(adapter: adapter){
-            currentMemo = adapter
-            with(binding){
-                textNo.text = "${adapter.no}"
-                textTitle.text =adapter.title
-
-                val sdf = SimpleDateFormat("yyyy-MM-dd")
-                val formattedData = sdf.format(adapter.timestamp)
-                textDate.text= formattedData
-            }
-        }*/
-
-
 
     }
 }
