@@ -3,6 +3,7 @@ package com.example.capstonetest
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.ActionBar
 import com.example.capstonetest.databinding.ActivityProcessBinding
 import com.example.capstonetest.databinding.ActivitySubBinding
 
@@ -17,6 +18,9 @@ class ProcessActivity : AppCompatActivity() {
         setContentView(binding.root)
         val intent = Intent(this@ProcessActivity,MainActivity::class.java)
         val aaa = Intent(this@ProcessActivity, SubActivity::class.java)
+
+        val actionBar: ActionBar? = supportActionBar
+        actionBar?.hide()
 
         binding.button1.setOnClickListener {
             startActivity(aaa)
