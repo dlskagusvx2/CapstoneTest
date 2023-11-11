@@ -10,19 +10,25 @@ class ProcessActivity : AppCompatActivity() {
     private val binding by lazy {
         ActivityProcessBinding.inflate(layoutInflater)
     }
-    val l = "https://www.youtube.com/watch?v=If95bdcptEM"
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-        val intent = Intent(this@ProcessActivity,MainActivity::class.java)
+
         val aaa = Intent(this@ProcessActivity, SubActivity::class.java)
+
+
 
         binding.button1.setOnClickListener {
             startActivity(aaa)
         }
         //intent.putExtra("url",l)
         binding.triangleButton.setOnClickListener {
+            val intent = Intent(this@ProcessActivity,MainActivity::class.java)
+            val url = binding.urlEditText.text
+            //editText의 url을 mainActivity로 전송
+            intent.putExtra("url",url.toString())
             startActivity(intent)
             finish()
         }

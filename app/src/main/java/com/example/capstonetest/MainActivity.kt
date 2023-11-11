@@ -123,10 +123,17 @@ class MainActivity : AppCompatActivity() {
                 }, 3000) // 3초 지연
             }
         }
+        var url = intent.getStringExtra("url").toString()
+        //url의 맨뒤에 있는 / 제거
+        if (url != null || url != "null"){
+            url = url.substring(url.length - 1)
+        }
+        //webView.loadUrl("https://www.youtube.com/watch?v=u42Afwnl4uQ?cc_lang_pref=ko&cc_load_policy=1")
+
 
         // 웹 페이지 로드
         //스크립트의 언어를 한국어를 디폴트로 설정하기 위해 URL에 ?cc_lang_pref=ko&cc_load_policy=1 추가
-        webView.loadUrl("https://www.youtube.com/watch?v=u42Afwnl4uQ?cc_lang_pref=ko&cc_load_policy=1")
+        webView.loadUrl(url+"?cc_lang_pref=ko&cc_load_policy=1")
 
         // WebView에서 JavaScript 코드 실행 결과를 처리하는 인터페이스
         webView.addJavascriptInterface(this, "android")
