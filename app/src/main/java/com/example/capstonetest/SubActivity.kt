@@ -6,6 +6,8 @@ import android.icu.text.SimpleDateFormat
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Environment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,6 +24,8 @@ import com.example.capstonetest.databinding.ItemRecyclerBinding
 import com.example.capstonetest.db.AppDatabase
 import com.example.capstonetest.db.SummaryDao
 import com.example.capstonetest.db.SummaryEntity
+import java.io.File
+import java.io.FileOutputStream
 
 class SubActivity : AppCompatActivity(),OnItemLongClickListener {
     private val binding by lazy {
@@ -136,7 +140,7 @@ class CustomAdapter(val SummaryList:ArrayList<SummaryEntity>,
         //holder.setMemo(adapter)
         */
         val SummaryData = SummaryList[position]
-
+        val data = SummaryData.summary
         holder.summaryTitle.text = SummaryData.title
         holder.summaryContent.text = SummaryData.summary
         holder.summaryDate.text = SummaryData.date
@@ -145,6 +149,8 @@ class CustomAdapter(val SummaryList:ArrayList<SummaryEntity>,
             false
         }
     }
+
+
 
     override fun getItemCount() = SummaryList.size
 

@@ -36,4 +36,5 @@ class ProcessActivity : AppCompatActivity() {
         }
         //val url = intent.getStringExtra("url")
     }
+
 }

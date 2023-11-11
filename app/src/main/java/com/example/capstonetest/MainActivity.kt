@@ -44,7 +44,7 @@ class MainActivity : AppCompatActivity() {
         ActivityMainBinding.inflate(layoutInflater)
     }
     private lateinit var webView: WebView
-    val apiKey = ""// api 키 입력해야함
+    val apiKey = "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"// api 키 입력해야함
     val endpoint = "https://api.openai.com/v1/chat/completions"
     val model = "gpt-3.5-turbo" // 사용할 모델 (GPT-3 Turbo)
     var scriptSummary: String = ""
@@ -128,7 +128,7 @@ class MainActivity : AppCompatActivity() {
         var url = intent.getStringExtra("url").toString()
         //url의 맨뒤에 있는 / 제거
         if (url != null || url != "null"){
-            url = url.substring(url.length - 1)
+            url = url.substring(0,url.length - 1)
         }
         //webView.loadUrl("https://www.youtube.com/watch?v=u42Afwnl4uQ?cc_lang_pref=ko&cc_load_policy=1")
 
