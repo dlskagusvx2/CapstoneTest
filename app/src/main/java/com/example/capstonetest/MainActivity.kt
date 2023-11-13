@@ -44,7 +44,7 @@ class MainActivity : AppCompatActivity() {
         ActivityMainBinding.inflate(layoutInflater)
     }
     private lateinit var webView: WebView
-    val apiKey = "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"// api 키 입력해야함
+    val apiKey = ""// api 키 입력해야함
     val endpoint = "https://api.openai.com/v1/chat/completions"
     val model = "gpt-3.5-turbo" // 사용할 모델 (GPT-3 Turbo)
     var scriptSummary: String = ""

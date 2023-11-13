@@ -1,21 +1,13 @@
 package com.example.capstonetest
 
-import android.app.DownloadManager
-import android.content.Context
 import android.content.Intent
-import android.net.Uri
-import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Environment
-import android.text.TextUtils
 import android.util.Log
 import android.widget.Toast
-import com.example.capstonetest.databinding.ActivityMainBinding
+import androidx.appcompat.app.AppCompatActivity
 import com.example.capstonetest.databinding.ActivityTextBinding
 import java.io.File
 import java.io.FileOutputStream
-import java.io.IOException
 
 
 class textActivity : AppCompatActivity() {
@@ -43,6 +35,25 @@ class textActivity : AppCompatActivity() {
             val content = binding.textContent.text.toString()
             val filename = binding.textTitle.text.toString()
 
+            writeTextFile(filename,content)
+
+        }
+    }
+
+    private fun writeTextFile(filename: String, content: String){
+        val path = "/data/data/com.example.capstonetest/files"
+        val files = path+"/text.txt"
+
+        val file: File = File(files)
+        try {
+            Log.d("파일생성 : ", files)
+            val fos = FileOutputStream(file)
+            val str = content
+            fos.write(str.toByteArray())
+            fos.close() //스트림 닫기
+            Toast.makeText(this@textActivity, "저장되었습니다.", Toast.LENGTH_SHORT).show()
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
