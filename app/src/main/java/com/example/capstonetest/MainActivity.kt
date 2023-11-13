@@ -44,7 +44,7 @@ class MainActivity : AppCompatActivity() {
         ActivityMainBinding.inflate(layoutInflater)
     }
     private lateinit var webView: WebView
-    val apiKey = "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"// api 키 입력해야함
+    val apiKey = ""// api 키 입력해야함
     val endpoint = "https://api.openai.com/v1/chat/completions"
     val model = "gpt-3.5-turbo" // 사용할 모델 (GPT-3 Turbo)
     var scriptSummary: String = ""
@@ -157,69 +157,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    /*
-    private fun askToChatGPT(q: String) {
-        Toast.makeText(this@MainActivity,"askToChatGPT함수 시작",Toast.LENGTH_SHORT).show()
-        val messagesArray = JsonArray()
-        val userMessage = JsonObject()
-        userMessage.addProperty("role", "user")
-        userMessage.addProperty("content", "${q} 유튜브 영상 스크립트인데 요약해줘.") // 사용자 메시지를 추가
-        messagesArray.add(userMessage)
-
-        val client = OkHttpClient.Builder()
-            .connectTimeout(300, TimeUnit.SECONDS) // 연결 시간 초과 설정
-            .readTimeout(300, TimeUnit.SECONDS)    // 읽기 시간 초과 설정
-            .build()
-        val jsonMediaType = "application/json; charset=utf-8".toMediaType()
-        val requestBody = JsonObject()
-        requestBody.add("messages", messagesArray)
-        requestBody.addProperty("model", model) // 모델 명시
-
-        val request = Request.Builder()
-            .url(endpoint)
-            .addHeader("Authorization", "Bearer $apiKey")
-            .post(requestBody.toString().toRequestBody(jsonMediaType))
-            .build()
-
-        Thread {
-            try {
-                val response = client.newCall(request).execute()
-                val responseBody = response.body?.string()
-                val jsonResponse = JsonParser.parseString(responseBody) as JsonObject
-                val choicesArray = jsonResponse.getAsJsonArray("choices")
-
-                if (choicesArray != null && choicesArray.size() > 0) {
-                    val assistantMessage = choicesArray[0].asJsonObject.getAsJsonObject("message")
-                    val content = assistantMessage.getAsJsonPrimitive("content").asString
-                    Log.d("aaa","askToChatGPT함수 content => ${content}")
-                    runOnUiThread {
-                        if(binding.textbox.text != "텍스트가 여기에 표시됩니다."){
-                            var currentText = binding.textbox.text.toString()
-                            var newText = currentText + content
-                            binding.textbox.text = newText
-                        }else{
-                            binding.textbox.text = content
-                        }
-                    }
-
-                } else {
-                    runOnUiThread {
-                        // UI 업데이트를 메인 스레드에서 수행
-                        binding.textbox.text = "실패2"
-                    }
-                }
-            } catch (e: IOException) {
-                e.printStackTrace()
-                runOnUiThread {
-                    // UI 업데이트를 메인 스레드에서 수행
-                    binding.textbox.text = "오류 발생 ${e}"
-                }
-            }
-        }.start()
-
-
-    } */
-
     private fun askToMultiChatGPT(title:String,qList: List<String>){
         Toast.makeText(this@MainActivity,"askToMultiChatGPT함수 시작",Toast.LENGTH_SHORT).show()
         val client = OkHttpClient.Builder()
@@ -234,7 +171,7 @@ class MainActivity : AppCompatActivity() {
                     val messagesArray = JsonArray()
                     val message = JsonObject()
                     message.addProperty("role", "user")
-                    message.addProperty("content", "${title}이라는 제목의 ${q} 유튜브 영상 스크립트인데 요약해줘.") // 사용자 메시지를 추가
+                    message.addProperty("content", "${title}이라는 제목의 ${q} 유튜브 영상 스크립트인데 주요 내용을 요약해줘.") // 사용자 메시지를 추가
                     messagesArray.add(message)
 
                     val jsonMediaType = "application/json; charset=utf-8".toMediaType()
