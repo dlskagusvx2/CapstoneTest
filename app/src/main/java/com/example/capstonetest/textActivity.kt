@@ -1,13 +1,19 @@
 package com.example.capstonetest
 
+import android.content.ContentResolver
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
+import android.provider.DocumentsContract
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.capstonetest.databinding.ActivityTextBinding
 import java.io.File
+import java.io.FileNotFoundException
 import java.io.FileOutputStream
+import java.io.IOException
 
 
 class textActivity : AppCompatActivity() {
@@ -15,6 +21,8 @@ class textActivity : AppCompatActivity() {
         ActivityTextBinding.inflate(layoutInflater)
     }
     val l = "https://www.youtube.com/watch?v=If95bdcptEM"
+    val CREATE_FILE = 1
+    //val contentResolver = applicationContext.contentResolver
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,7 +43,13 @@ class textActivity : AppCompatActivity() {
             val content = binding.textContent.text.toString()
             val filename = binding.textTitle.text.toString()
 
-            writeTextFile(filename,content)
+            //writeTextFile(filename,content)
+            val initialDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+            val uri = Uri.fromFile(initialDirectory)
+            createFile(uri,filename)
+            val path = File(initialDirectory.toString()+"/text.txt")
+            val fileUri = Uri.fromFile(path)
+            alterDocument(fileUri,content)
 
         }
     }
@@ -53,6 +67,31 @@ class textActivity : AppCompatActivity() {
             fos.close() //스트림 닫기
             Toast.makeText(this@textActivity, "저장되었습니다.", Toast.LENGTH_SHORT).show()
         } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+    private fun createFile(pickerInitialUri: Uri, filename: String){
+        val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
+            addCategory(Intent.CATEGORY_OPENABLE)
+            type = "application/txt"
+            putExtra(Intent.EXTRA_TITLE, "text.txt")
+            putExtra(DocumentsContract.EXTRA_INITIAL_URI,pickerInitialUri)
+        }
+        startActivityForResult(intent, CREATE_FILE)
+    }
+
+    private fun alterDocument(uri:Uri,content:String){
+        try {
+            contentResolver.openFileDescriptor(uri,"w")?.use {
+                FileOutputStream(it.fileDescriptor).use {
+                    it.write(
+                        content.toByteArray()
+                    )
+                }
+            }
+        }catch (e: FileNotFoundException){
+            e.printStackTrace()
+        }catch (e: IOException){
             e.printStackTrace()
         }
     }
