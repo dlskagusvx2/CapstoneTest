@@ -40,6 +40,7 @@ import java.util.concurrent.TimeUnit
 
 
 class MainActivity : AppCompatActivity() {
+
     private val binding by lazy {
         ActivityMainBinding.inflate(layoutInflater)
     }
