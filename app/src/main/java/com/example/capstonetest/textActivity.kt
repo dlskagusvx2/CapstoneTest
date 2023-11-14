@@ -14,13 +14,13 @@ import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException
+import java.nio.file.Files.createFile
 
 
 class textActivity : AppCompatActivity() {
     private val binding by lazy {
         ActivityTextBinding.inflate(layoutInflater)
     }
-    val l = "https://www.youtube.com/watch?v=If95bdcptEM"
     val CREATE_FILE = 1
     //val contentResolver = applicationContext.contentResolver
 
@@ -43,34 +43,24 @@ class textActivity : AppCompatActivity() {
             val content = binding.textContent.text.toString()
             val filename = binding.textTitle.text.toString()
 
-            //writeTextFile(filename,content)
             val initialDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
             val uri = Uri.fromFile(initialDirectory)
-            createFile(uri,filename)
+
             val path = File(initialDirectory.toString()+"/text.txt")
             val fileUri = Uri.fromFile(path)
+
+            createDocument(uri,filename,fileUri)
             alterDocument(fileUri,content)
 
         }
     }
 
-    private fun writeTextFile(filename: String, content: String){
-        val path = "/data/data/com.example.capstonetest/files"
-        val files = path+"/text.txt"
 
-        val file: File = File(files)
-        try {
-            Log.d("파일생성 : ", files)
-            val fos = FileOutputStream(file)
-            val str = content
-            fos.write(str.toByteArray())
-            fos.close() //스트림 닫기
-            Toast.makeText(this@textActivity, "저장되었습니다.", Toast.LENGTH_SHORT).show()
-        } catch (e: Exception) {
-            e.printStackTrace()
+    private fun createDocument(pickerInitialUri: Uri, filename: String, fileUri:Uri){
+        if (DocumentsContract.isDocumentUri(this,fileUri)){
+            //동일한 이름의 파일이 있으면 삭제 후 생성
+            deleteDocument(fileUri)
         }
-    }
-    private fun createFile(pickerInitialUri: Uri, filename: String){
         val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
             addCategory(Intent.CATEGORY_OPENABLE)
             type = "application/txt"
@@ -78,6 +68,9 @@ class textActivity : AppCompatActivity() {
             putExtra(DocumentsContract.EXTRA_INITIAL_URI,pickerInitialUri)
         }
         startActivityForResult(intent, CREATE_FILE)
+        Toast.makeText(this,"파일 생성 완료",Toast.LENGTH_SHORT).show()
+        Log.d("aaa","파일 생성 완료")
+
     }
 
     private fun alterDocument(uri:Uri,content:String){
@@ -96,5 +89,11 @@ class textActivity : AppCompatActivity() {
         }
     }
 
+    private fun deleteDocument(uri:Uri){
+        DocumentsContract.deleteDocument(applicationContext.contentResolver, uri)
+
+        Toast.makeText(this,"파일 삭제 완료",Toast.LENGTH_SHORT).show()
+        Log.d("aaa","파일 삭제 완료")
+    }
 
 }

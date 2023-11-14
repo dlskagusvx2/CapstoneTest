@@ -158,7 +158,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun askToMultiChatGPT(title:String,qList: List<String>){
+    private fun askToMultiChatGPT(title:String,qList: List<String>,isOver:Boolean){
         Toast.makeText(this@MainActivity,"askToMultiChatGPT함수 시작",Toast.LENGTH_SHORT).show()
         val client = OkHttpClient.Builder()
             .connectTimeout(300, TimeUnit.SECONDS) // 연결 시간 초과 설정
@@ -210,6 +210,10 @@ class MainActivity : AppCompatActivity() {
 
         }
         scriptSummary = responseList.joinToString("")
+        if (isOver){
+            //미완성
+        }
+
         binding.textbox.text = responseList.joinToString("")
         binding.webView.visibility = GONE
 
@@ -221,7 +225,7 @@ class MainActivity : AppCompatActivity() {
     fun onTextExtracted(title:String,result: String) {
         Toast.makeText(this,title,Toast.LENGTH_LONG).show()
         scriptTitle = title.trim()
-        askToMultiChatGPT(title,substringToken(result))
+        askToMultiChatGPT(title,substringToken(result),getTokenSize(result) >= 4000)
     }
 
     private fun substringToken(t:String): MutableList<String> {
