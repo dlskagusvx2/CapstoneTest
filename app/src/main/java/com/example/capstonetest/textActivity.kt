@@ -8,6 +8,7 @@ import android.os.Environment
 import android.provider.DocumentsContract
 import android.util.Log
 import android.widget.Toast
+import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import com.example.capstonetest.databinding.ActivityTextBinding
 import java.io.File
@@ -28,6 +29,8 @@ class textActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+        val actionBar: ActionBar? = supportActionBar
+        actionBar?.hide()
 
 
         val title = intent.getStringExtra("title")
@@ -41,12 +44,12 @@ class textActivity : AppCompatActivity() {
         }
         binding.exportBtn.setOnClickListener {
             val content = binding.textContent.text.toString()
-            val filename = binding.textTitle.text.toString()
+            val filename = binding.textTitle.text.toString().replace("|","").replace("  ","_").replace(" ","_").replace(",","")
 
             val initialDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
             val uri = Uri.fromFile(initialDirectory)
 
-            val path = File(initialDirectory.toString()+"/text.txt")
+            val path = File(initialDirectory.toString()+"/${filename}.txt")
             val fileUri = Uri.fromFile(path)
 
             createDocument(uri,filename,fileUri)
@@ -64,7 +67,7 @@ class textActivity : AppCompatActivity() {
         val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
             addCategory(Intent.CATEGORY_OPENABLE)
             type = "application/txt"
-            putExtra(Intent.EXTRA_TITLE, "text.txt")
+            putExtra(Intent.EXTRA_TITLE, "${filename}.txt")
             putExtra(DocumentsContract.EXTRA_INITIAL_URI,pickerInitialUri)
         }
         startActivityForResult(intent, CREATE_FILE)
@@ -80,6 +83,8 @@ class textActivity : AppCompatActivity() {
                     it.write(
                         content.toByteArray()
                     )
+                    Toast.makeText(this,"내용 작성 완료",Toast.LENGTH_SHORT).show()
+                    Log.d("aaa","내용 작성 완료")
                 }
             }
         }catch (e: FileNotFoundException){
