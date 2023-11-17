@@ -44,6 +44,7 @@ class textActivity : AppCompatActivity() {
             finish()
         }
 
+
         val menuItemClickListener = androidx.appcompat.widget.Toolbar.OnMenuItemClickListener { item ->
             when(item?.itemId){
                 R.id.download -> {
