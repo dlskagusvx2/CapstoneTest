@@ -15,7 +15,7 @@
         <androidx.appcompat.widget.Toolbar
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-
+            android:id="@+id/toolBar"
             app:popupTheme="@style/Theme.TitleBar.PopupOverlay"
             app:menu="@menu/top_nav_menu" />
 
@@ -79,13 +79,4 @@
             android:textSize="15dp" />
     </ScrollView>
 
-    <Button
-        android:id="@+id/exportBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="440dp"
-        android:layout_marginEnd="51dp"
-        android:text="Button"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/view2" />
 </androidx.constraintlayout.widget.ConstraintLayout>

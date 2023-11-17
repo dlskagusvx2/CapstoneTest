@@ -8,6 +8,7 @@ import android.os.Environment
 import android.provider.DocumentsContract
 import android.util.Log
 import android.widget.Toast
+import android.widget.Toolbar
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import com.example.capstonetest.databinding.ActivityTextBinding
@@ -42,20 +43,27 @@ class textActivity : AppCompatActivity() {
             startActivity(intent)
             finish()
         }
-        binding.exportBtn.setOnClickListener {
-            val content = binding.textContent.text.toString()
-            val filename = binding.textTitle.text.toString().replace("|","").replace("  ","_").replace(" ","_").replace(",","")
 
-            val initialDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-            val uri = Uri.fromFile(initialDirectory)
+        val menuItemClickListener = androidx.appcompat.widget.Toolbar.OnMenuItemClickListener { item ->
+            when(item?.itemId){
+                R.id.download -> {
+                    val content = binding.textContent.text.toString()
+                    val filename = binding.textTitle.text.toString().replace("|","").replace("  ","_").replace(" ","_").replace(",","")
 
-            val path = File(initialDirectory.toString()+"/${filename}.txt")
-            val fileUri = Uri.fromFile(path)
+                    val initialDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+                    val uri = Uri.fromFile(initialDirectory)
 
-            createDocument(uri,filename,fileUri)
-            alterDocument(fileUri,content)
+                    val path = File(initialDirectory.toString()+"/${filename}.txt")
+                    val fileUri = Uri.fromFile(path)
 
+                    createDocument(uri,filename,fileUri)
+                    alterDocument(fileUri,content)
+                }
+            }
+            false
         }
+
+        binding.toolBar.setOnMenuItemClickListener(menuItemClickListener)
     }
 
 
