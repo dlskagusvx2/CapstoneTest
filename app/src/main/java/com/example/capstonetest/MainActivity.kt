@@ -172,7 +172,8 @@ class MainActivity : AppCompatActivity() {
                     val messagesArray = JsonArray()
                     val message = JsonObject()
                     message.addProperty("role", "user")
-                    message.addProperty("content", "${title}이라는 제목의 ${q} 유튜브 영상 스크립트인데 주요 내용을 요약해줘.") // 사용자 메시지를 추가
+                    message.addProperty("content", "${title}이라는 제목의 ${q} 유튜브 영상 스크립트인데 너는 온라인 콘텐츠 분석 전문가야.인터넷 컨텐츠의 내용을 분석을 분석해서 내용을 정확하고" +
+                            "8 명확하게 정리하는데 특별히 전문성이 있어. 다음 분석기법을 사용하는데 능숙해. 핵심 키워드추출:TF-IDF방법,컨텐츠요약:TextRank 알고리즘 , 목차 리스트업:Clustering 기법. 이제 유튜브스크립트내용으로 다음과 같은 작업을 수행해 1)제목 콘텐츠 제목, 2) 키워드 핵심 키워드 추출,3) 브리프 50자 이내로 브리프작성,4)구성 내용 흐름을 분석해서 구성 목차를 간결하게 리스트업 5) 전체 요약 전체글을 요약(중요내용을 빠짐없이 포함,250자로 이내로 정리),6)용어 설명 새로운 용어가 있으면 볼드체로 표기 요약문 끝에 용어 설명 추가, 결과는 마크다운 형식으로 정리해주고, 전문용어 외에는 한국어로 답변해줘.유튜브 스크립트에 없는 내용을 추가하지 말것.") // 사용자 메시지를 추가
                     messagesArray.add(message)
 
                     val jsonMediaType = "application/json; charset=utf-8".toMediaType()
