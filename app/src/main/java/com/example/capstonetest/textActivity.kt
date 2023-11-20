@@ -33,6 +33,7 @@ class textActivity : AppCompatActivity() {
         actionBar?.hide()
 
 
+
         val title = intent.getStringExtra("title")
         binding.textTitle.text = title
         binding.textContent.text = intent.getStringExtra("content")

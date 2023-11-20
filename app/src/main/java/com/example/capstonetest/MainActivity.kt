@@ -13,6 +13,7 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import com.example.capstonetest.databinding.ActivityMainBinding
@@ -45,7 +46,7 @@ class MainActivity : AppCompatActivity() {
         ActivityMainBinding.inflate(layoutInflater)
     }
     private lateinit var webView: WebView
-    val apiKey = ""// api 키 입력해야함
+    val apiKey = "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"// api 키 입력해야함
     val endpoint = "https://api.openai.com/v1/chat/completions"
     val model = "gpt-3.5-turbo" // 사용할 모델 (GPT-3 Turbo)
     var scriptSummary: String = ""
@@ -63,6 +64,9 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
+        val actionBar: ActionBar? = supportActionBar
+        actionBar?.hide()
 
         webView = binding.webView
 
