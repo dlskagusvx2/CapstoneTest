@@ -13,26 +13,20 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolBar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:id="@+id/toolBar"
-            app:popupTheme="@style/Theme.TitleBar.PopupOverlay"
-            app:menu="@menu/top_nav_menu" />
+            app:menu="@menu/top_nav_menu"
+            app:popupTheme="@style/Theme.TitleBar.PopupOverlay">
+
+            <Button
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:id="@+id/back"
+                android:background="@drawable/baseline_arrow_back_ios_new_24"/>
+        </androidx.appcompat.widget.Toolbar>
 
     </com.google.android.material.appbar.AppBarLayout>
-
-    <Button
-        android:id="@+id/mButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="440dp"
-        android:background="@drawable/buttons"
-        android:text="화면전환"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textTitle"
-        tools:ignore="MissingConstraints" />
 
     <TextView
         android:id="@+id/textTitle"
@@ -41,9 +35,9 @@
         android:layout_marginTop="60dp"
         android:lineSpacingExtra="10dp"
         android:text="TextView"
+        android:textColor="@color/black"
         android:textSize="20dp"
         android:textStyle="bold"
-        android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -59,14 +53,14 @@
         app:layout_constraintTop_toBottomOf="@+id/textTitle" />
 
     <ScrollView
-        android:layout_width="321dp"
-        android:layout_height="361dp"
+        android:layout_width="326dp"
+        android:layout_height="566dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.455"
+        app:layout_constraintHorizontal_bias="0.466"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.421">
+        app:layout_constraintVertical_bias="0.834">
 
         <TextView
             android:id="@+id/textContent"
