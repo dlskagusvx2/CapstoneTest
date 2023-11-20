@@ -45,7 +45,6 @@ class MainActivity : AppCompatActivity() {
         ActivityMainBinding.inflate(layoutInflater)
     }
     private lateinit var webView: WebView
-    val apiKey = ""// api 키 입력해야함
     val endpoint = "https://api.openai.com/v1/chat/completions"
     val model = "gpt-3.5-turbo" // 사용할 모델 (GPT-3 Turbo)
     var scriptSummary: String = ""
@@ -181,6 +180,7 @@ class MainActivity : AppCompatActivity() {
                     requestBody.add("messages", messagesArray)
                     requestBody.addProperty("model", model) // 모델 명시
 
+                    /*
                     val request = Request.Builder()
                         .url(endpoint)
                         .addHeader("Authorization", "Bearer $apiKey")
@@ -188,13 +188,15 @@ class MainActivity : AppCompatActivity() {
                         .build()
 
                     val response:Response  = client.newCall(request).execute()
-                    response
+                    response*/
 
                 }
             }
 
             deferredResponses.awaitAll()
         }
+
+        /*
 
 
         var responseList = mutableListOf<String>()
@@ -216,7 +218,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.textbox.text = responseList.joinToString("")
-        binding.webView.visibility = GONE
+        binding.webView.visibility = GONE*/
 
 
     }

@@ -133,6 +133,7 @@ class ProcessActivity : AppCompatActivity() {
 
 
         binding.triangleButton.setOnClickListener {
+            Toast.makeText(this@ProcessActivity,"요약 시작",Toast.LENGTH_SHORT).show()
             var url = binding.urlEditText.text.toString()
             if (url != null || url != "null"){
                 //url의 맨뒤에 있는 / 제거
@@ -214,11 +215,15 @@ class ProcessActivity : AppCompatActivity() {
             responseList.add(content)
 
         }
-        scriptSummary = responseList.joinToString("")
-        /*
+
+
         if (isOver){
-            //미완성
-        }*/
+            //스크립트가 4000토큰 이상일 경우
+            Toast.makeText(this@ProcessActivity,"스크립트 재 요약",Toast.LENGTH_SHORT).show()
+            onTextExtracted(title,responseList.joinToString(""))
+        }else{
+            scriptSummary = responseList.joinToString("")
+        }
 
     }
 
