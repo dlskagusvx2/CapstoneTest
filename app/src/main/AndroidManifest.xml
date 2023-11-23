@@ -9,17 +9,19 @@
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/ic_launcher"
-        android:label="Chat-gpt를 이용한 문서요약"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:icon="@mipmap/ic_main"
+        android:label="SGPT"
+        android:roundIcon="@mipmap/ic_main"
         android:supportsRtl="true"
         android:theme="@style/Theme.CapstoneTest"
         tools:targetApi="34">
         <activity
+            android:name=".DialogActivity"
+            android:exported="false" />
+        <activity
             android:name=".textActivity"
             android:exported="false"
-            android:label="문서 내용"
-            />
+            android:label="문서 내용" />
         <activity
             android:name=".MainActivity"
             android:exported="false"

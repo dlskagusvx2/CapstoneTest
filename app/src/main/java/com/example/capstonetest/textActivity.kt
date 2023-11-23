@@ -1,6 +1,5 @@
 package com.example.capstonetest
 
-import android.content.ContentResolver
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -8,7 +7,6 @@ import android.os.Environment
 import android.provider.DocumentsContract
 import android.util.Log
 import android.widget.Toast
-import android.widget.Toolbar
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import com.example.capstonetest.databinding.ActivityTextBinding
@@ -16,7 +14,6 @@ import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException
-import java.nio.file.Files.createFile
 
 
 class textActivity : AppCompatActivity() {
@@ -38,11 +35,14 @@ class textActivity : AppCompatActivity() {
         binding.textTitle.text = title
         binding.textContent.text = intent.getStringExtra("content")
         val intent = Intent(this@textActivity, SubActivity::class.java)
-        binding.mButton.setOnClickListener {
+         binding.back.setOnClickListener {
 
-            startActivity(intent)
             finish()
         }
+
+
+        actionBar!!.setDisplayHomeAsUpEnabled(true) //버튼 보이게 하는 속성
+
 
 
         val menuItemClickListener = androidx.appcompat.widget.Toolbar.OnMenuItemClickListener { item ->
@@ -60,11 +60,15 @@ class textActivity : AppCompatActivity() {
                     createDocument(uri,filename,fileUri)
                     alterDocument(fileUri,content)
                 }
+                R.id.mButton -> {
+                    finish()
+                }
             }
             false
         }
 
         binding.toolBar.setOnMenuItemClickListener(menuItemClickListener)
+
     }
 
 
