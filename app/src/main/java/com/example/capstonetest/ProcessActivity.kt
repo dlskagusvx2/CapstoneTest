@@ -57,6 +57,7 @@ class ProcessActivity : AppCompatActivity() {
     private val binding by lazy {
         ActivityProcessBinding.inflate(layoutInflater)
     }
+
     private lateinit var webView: WebView
     val apiKey = ""// api 키 입력해야함
     val endpoint = "https://api.openai.com/v1/chat/completions"
