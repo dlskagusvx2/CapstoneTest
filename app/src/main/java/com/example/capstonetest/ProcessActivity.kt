@@ -15,12 +15,16 @@ import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Button
+import android.widget.EditText
+import android.widget.ImageView
 import android.widget.ProgressBar
+import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat.startActivity
+import com.bumptech.glide.Glide
 import com.example.capstonetest.databinding.ActivityProcessBinding
 import com.example.capstonetest.databinding.ActivitySubBinding
 import com.example.capstonetest.db.AppDatabase
@@ -63,8 +67,11 @@ class ProcessActivity : AppCompatActivity() {
 
     lateinit var db: AppDatabase
     lateinit var summaryDao: SummaryDao
-    private lateinit var progressBar: ProgressBar
+    private lateinit var progress: ImageView
     private lateinit var triangleButton: Button
+    private lateinit var button2: Button
+    private lateinit var urls: EditText
+
     private val handler = Handler(Looper.getMainLooper())
 
 
@@ -73,10 +80,12 @@ class ProcessActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        progressBar = findViewById(R.id.progressBar)
-
+        progress = findViewById(R.id.progress)
+        button2 = findViewById(R.id.button1)
         triangleButton = findViewById(R.id.triangleButton)
+        urls = findViewById(R.id.urlEditText)
 
+        Glide.with(this).load(R.raw.loading).override(1200, 1200).into(progress)
 
 /*
         val intent = Intent(this,DialogActivity::class.java)
@@ -156,16 +165,13 @@ class ProcessActivity : AppCompatActivity() {
 
         binding.triangleButton.setOnClickListener {
             showLoading()
-
-
+/*
             // 가상의 백그라운드 작업을 수행하는 코루틴
             GlobalScope.launch(Dispatchers.Main) {
                 // 가상의 작업을 수행
-                //simulateBackgroundTask()
+                simulateBackgroundTask()
                 // 작업이 완료되면 로딩 창을 숨김
-                //hideLoading()
-            }
-
+            }*/
             var url = binding.urlEditText.text.toString()
 
             if(url != null && url.isNotBlank() && "youtu.be" in url && url != ""){
@@ -189,29 +195,28 @@ class ProcessActivity : AppCompatActivity() {
         }
     }
 
+
+
     private fun showLoading() {
-        Log.d("Loading", "showLoading")
-        progressBar.visibility = View.VISIBLE
+        progress.visibility = View.VISIBLE
         triangleButton.isEnabled = false // 작업 중에 버튼 비활성화
+        button2.isEnabled = false
+        urls.isEnabled = false
 
     }
 
     private fun hideLoading() {
-        Log.d("Loading", "hideLoading")
-
-        progressBar.visibility = View.GONE
+        progress.visibility = View.GONE
         triangleButton.isEnabled = true // 작업 완료 후 버튼 활성화
+        button2.isEnabled = false
+        urls.isEnabled = false
 
     }
-
+/*
     private suspend fun simulateBackgroundTask() {
-        Log.d("Loading", "simulateBackgroundTask start")
-
         // 가상의 백그라운드 작업 시뮬레이션을 위해 3초간 대기
-        delay(1000)
-        Log.d("Loading", "simulateBackgroundTask end")
 
-    }
+    }*/
 
     private fun endSummary(summary:String){
         Toast.makeText(this@ProcessActivity,"endSummary함수 실행",Toast.LENGTH_SHORT).show()
