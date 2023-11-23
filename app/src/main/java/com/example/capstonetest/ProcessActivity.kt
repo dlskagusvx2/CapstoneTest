@@ -1,5 +1,6 @@
 package com.example.capstonetest
 
+import android.app.Dialog
 import android.content.Intent
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
@@ -12,9 +13,12 @@ import android.webkit.JavascriptInterface
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.widget.Button
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.ActionBar
+import androidx.core.content.ContextCompat.startActivity
 import com.example.capstonetest.databinding.ActivityProcessBinding
 import com.example.capstonetest.databinding.ActivitySubBinding
 import com.example.capstonetest.db.AppDatabase
@@ -26,8 +30,11 @@ import com.google.gson.JsonParser
 import com.knuddels.jtokkit.Encodings
 import com.knuddels.jtokkit.api.Encoding
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -55,11 +62,30 @@ class ProcessActivity : AppCompatActivity() {
 
     lateinit var db: AppDatabase
     lateinit var summaryDao: SummaryDao
+    private lateinit var progressBar: ProgressBar
+    private lateinit var triangleButton: Button
+    private val handler = Handler(Looper.getMainLooper())
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
+        progressBar = findViewById(R.id.progressBar)
+
+        triangleButton = findViewById(R.id.triangleButton)
+
+
+
+
+
+
+
+
+/*
+        val intent = Intent(this,DialogActivity::class.java)
+        startActivity(intent)*/
 
         webView = binding.webView
         // WebView 설정
@@ -78,7 +104,7 @@ class ProcessActivity : AppCompatActivity() {
                 Handler(Looper.getMainLooper()).postDelayed({
                     runJavaScriptCode(
                         """
-                (function() {
+                (function() {   
                     // id가 description-inner인 요소를 찾아서 클릭
                     var descriptionInner = document.getElementById('description-inner');
                     if (descriptionInner) {
@@ -122,6 +148,7 @@ class ProcessActivity : AppCompatActivity() {
             }
         }
 
+
         // WebView에서 JavaScript 코드 실행 결과를 처리하는 인터페이스
         webView.addJavascriptInterface(this, "android")
 
@@ -133,6 +160,15 @@ class ProcessActivity : AppCompatActivity() {
 
 
         binding.triangleButton.setOnClickListener {
+            showLoading()
+
+            // 가상의 백그라운드 작업을 수행하는 코루틴
+            GlobalScope.launch(Dispatchers.Main) {
+                // 가상의 작업을 수행
+                simulateBackgroundTask()
+                // 작업이 완료되면 로딩 창을 숨김
+                hideLoading()
+            }
             var url = binding.urlEditText.text.toString()
             if (url != null || url != "null"){
                 //url의 맨뒤에 있는 / 제거
@@ -147,6 +183,30 @@ class ProcessActivity : AppCompatActivity() {
             val processToHistory = Intent(this@ProcessActivity,SubActivity::class.java)
             startActivity(processToHistory)
         }
+    }
+
+    private fun showLoading() {
+        Log.d("Loading", "showLoading")
+        progressBar.visibility = View.VISIBLE
+        triangleButton.isEnabled = false // 작업 중에 버튼 비활성화
+
+    }
+
+    private fun hideLoading() {
+        Log.d("Loading", "hideLoading")
+
+        progressBar.visibility = View.GONE
+        triangleButton.isEnabled = true // 작업 완료 후 버튼 활성화
+
+    }
+
+    private suspend fun simulateBackgroundTask() {
+        Log.d("Loading", "simulateBackgroundTask start")
+
+        // 가상의 백그라운드 작업 시뮬레이션을 위해 3초간 대기
+        delay(100000)
+        Log.d("Loading", "simulateBackgroundTask end")
+
     }
 
     private fun endSummary(summary:String){
