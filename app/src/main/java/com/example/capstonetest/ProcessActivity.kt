@@ -57,7 +57,7 @@ class ProcessActivity : AppCompatActivity() {
     val apiKey = ""// api 키 입력해야함
     val endpoint = "https://api.openai.com/v1/chat/completions"
     val model = "gpt-3.5-turbo" // 사용할 모델 (GPT-3 Turbo)
-    var scriptSummary: String by Delegates.observable(""){property: KProperty<*>, oldValue: String, newValue: String -> endSummary(newValue)}
+    var scriptSummary: String by Delegates.observable(""){property: KProperty<*>, oldValue: String, newValue: String ->endSummary(newValue)}
 
     var scriptTitle:String = ""
 
@@ -157,13 +157,15 @@ class ProcessActivity : AppCompatActivity() {
         binding.triangleButton.setOnClickListener {
             showLoading()
 
+
             // 가상의 백그라운드 작업을 수행하는 코루틴
             GlobalScope.launch(Dispatchers.Main) {
                 // 가상의 작업을 수행
-                simulateBackgroundTask()
+                //simulateBackgroundTask()
                 // 작업이 완료되면 로딩 창을 숨김
-                hideLoading()
+                //hideLoading()
             }
+
             var url = binding.urlEditText.text.toString()
 
             if(url != null && url.isNotBlank() && "youtu.be" in url && url != ""){
@@ -206,13 +208,14 @@ class ProcessActivity : AppCompatActivity() {
         Log.d("Loading", "simulateBackgroundTask start")
 
         // 가상의 백그라운드 작업 시뮬레이션을 위해 3초간 대기
-        delay(100000)
+        delay(1000)
         Log.d("Loading", "simulateBackgroundTask end")
 
     }
 
     private fun endSummary(summary:String){
         Toast.makeText(this@ProcessActivity,"endSummary함수 실행",Toast.LENGTH_SHORT).show()
+        Log.d("aaa","endSummary함수 실행")
         val processToSub = Intent(this@ProcessActivity,SubActivity::class.java)
         Thread{
             summaryDao.insertSummary(
@@ -226,6 +229,7 @@ class ProcessActivity : AppCompatActivity() {
 
     private fun askToMultiChatGPT(title:String,qList: List<String>,isOver:Boolean){
         Toast.makeText(this@ProcessActivity,"askToMultiChatGPT함수 시작", Toast.LENGTH_SHORT).show()
+        Log.d("aaa","askToMultiChatGPT함수 시작")
         val client = OkHttpClient.Builder()
             .connectTimeout(300, TimeUnit.SECONDS) // 연결 시간 초과 설정
             .readTimeout(300, TimeUnit.SECONDS)    // 읽기 시간 초과 설정
@@ -282,6 +286,7 @@ class ProcessActivity : AppCompatActivity() {
         if (isOver){
             //스크립트가 4000토큰 이상일 경우
             Toast.makeText(this@ProcessActivity,"스크립트 재 요약",Toast.LENGTH_SHORT).show()
+            Log.d("aaa","스크립트 재 요약")
             //onTextExtracted(title,responseList.joinToString(""))
             return askToMultiChatGPT(title,substringToken(result),getTokenSize(result) > 4000)
         }else{
