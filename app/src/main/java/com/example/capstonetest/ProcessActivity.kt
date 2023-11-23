@@ -1,5 +1,6 @@
 package com.example.capstonetest
 
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
@@ -15,6 +16,7 @@ import android.webkit.WebViewClient
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.ActionBar
+import androidx.appcompat.app.AlertDialog
 import com.example.capstonetest.databinding.ActivityProcessBinding
 import com.example.capstonetest.databinding.ActivitySubBinding
 import com.example.capstonetest.db.AppDatabase
@@ -45,7 +47,7 @@ class ProcessActivity : AppCompatActivity() {
         ActivityProcessBinding.inflate(layoutInflater)
     }
     private lateinit var webView: WebView
-    val apiKey = ""// api 키 입력해야함
+    val apiKey = "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"// api 키 입력해야함
 
     val endpoint = "https://api.openai.com/v1/chat/completions"
     val model = "gpt-3.5-turbo" // 사용할 모델 (GPT-3 Turbo)
@@ -133,16 +135,22 @@ class ProcessActivity : AppCompatActivity() {
 
 
         binding.triangleButton.setOnClickListener {
-            Toast.makeText(this@ProcessActivity,"요약 시작",Toast.LENGTH_SHORT).show()
             var url = binding.urlEditText.text.toString()
-            if (url != null || url != "null"){
-                //url의 맨뒤에 있는 / 제거
+
+            if(url != null && url.isNotBlank() && "youtu.be" in url && url != ""){
                 url = url.substring(0,url.length - 1)
+                Toast.makeText(this@ProcessActivity,"요약 시작",Toast.LENGTH_SHORT).show()
+                // 웹 페이지 로드
+                //스크립트의 언어를 한국어를 디폴트로 설정하기 위해 URL에 ?cc_lang_pref=ko&cc_load_policy=1 추가
+                webView.loadUrl(url+"?cc_lang_pref=ko&cc_load_policy=1")
+            }else{
+                val builder = AlertDialog.Builder(this)
+                builder.setTitle("올바른 url을 입력해 주십시오.")
+                    .setPositiveButton("확인", DialogInterface.OnClickListener { dialog, which ->
+                    })
+                builder.show()
             }
 
-            // 웹 페이지 로드
-            //스크립트의 언어를 한국어를 디폴트로 설정하기 위해 URL에 ?cc_lang_pref=ko&cc_load_policy=1 추가
-            webView.loadUrl(url+"?cc_lang_pref=ko&cc_load_policy=1")
         }
         binding.button1.setOnClickListener {
             val processToHistory = Intent(this@ProcessActivity,SubActivity::class.java)
@@ -215,14 +223,17 @@ class ProcessActivity : AppCompatActivity() {
             responseList.add(content)
 
         }
+        val result = responseList.joinToString("")
 
 
         if (isOver){
             //스크립트가 4000토큰 이상일 경우
             Toast.makeText(this@ProcessActivity,"스크립트 재 요약",Toast.LENGTH_SHORT).show()
-            onTextExtracted(title,responseList.joinToString(""))
+            //onTextExtracted(title,responseList.joinToString(""))
+            return askToMultiChatGPT(title,substringToken(result),getTokenSize(result) > 4000)
         }else{
-            scriptSummary = responseList.joinToString("")
+            scriptSummary = result
+            return
         }
 
     }

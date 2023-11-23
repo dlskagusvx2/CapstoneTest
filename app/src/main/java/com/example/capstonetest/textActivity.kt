@@ -69,10 +69,15 @@ class textActivity : AppCompatActivity() {
 
 
     private fun createDocument(pickerInitialUri: Uri, filename: String, fileUri:Uri){
-        if (DocumentsContract.isDocumentUri(this,fileUri)){
+/*
+        try {
             //동일한 이름의 파일이 있으면 삭제 후 생성
             deleteDocument(fileUri)
-        }
+        }catch (e: FileNotFoundException){
+            e.printStackTrace()
+        }catch (e: IOException){
+            e.printStackTrace()
+        }*/
         val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
             addCategory(Intent.CATEGORY_OPENABLE)
             type = "application/txt"
