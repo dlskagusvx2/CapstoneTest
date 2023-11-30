@@ -177,7 +177,7 @@ class ProcessActivity : AppCompatActivity() {
 
             if(url != null && url.isNotBlank() && "youtu.be" in url && url != ""){
                 url = url.substring(0,url.length - 1)
-                Toast.makeText(this@ProcessActivity,"요약 시작",Toast.LENGTH_SHORT).show()
+                //Toast.makeText(this@ProcessActivity,"요약 시작",Toast.LENGTH_SHORT).show()
                 // 웹 페이지 로드
                 //스크립트의 언어를 한국어를 디폴트로 설정하기 위해 URL에 ?cc_lang_pref=ko&cc_load_policy=1 추가
                 webView.loadUrl(url+"?cc_lang_pref=ko&cc_load_policy=1")
@@ -220,7 +220,7 @@ class ProcessActivity : AppCompatActivity() {
     }*/
 
     private fun endSummary(summary:String){
-        Toast.makeText(this@ProcessActivity,"endSummary함수 실행",Toast.LENGTH_SHORT).show()
+        //Toast.makeText(this@ProcessActivity,"endSummary함수 실행",Toast.LENGTH_SHORT).show()
         Log.d("aaa","endSummary함수 실행")
         val processToSub = Intent(this@ProcessActivity,SubActivity::class.java)
         Thread{
@@ -234,7 +234,7 @@ class ProcessActivity : AppCompatActivity() {
     }
 
     private fun askToMultiChatGPT(title:String,qList: List<String>,isOver:Boolean){
-        Toast.makeText(this@ProcessActivity,"askToMultiChatGPT함수 시작", Toast.LENGTH_SHORT).show()
+        //Toast.makeText(this@ProcessActivity,"askToMultiChatGPT함수 시작", Toast.LENGTH_SHORT).show()
         Log.d("aaa","askToMultiChatGPT함수 시작")
         val client = OkHttpClient.Builder()
             .connectTimeout(300, TimeUnit.SECONDS) // 연결 시간 초과 설정
@@ -291,7 +291,7 @@ class ProcessActivity : AppCompatActivity() {
 
         if (isOver){
             //스크립트가 4000토큰 이상일 경우
-            Toast.makeText(this@ProcessActivity,"스크립트 재 요약",Toast.LENGTH_SHORT).show()
+            //Toast.makeText(this@ProcessActivity,"스크립트 재 요약",Toast.LENGTH_SHORT).show()
             Log.d("aaa","스크립트 재 요약")
             //onTextExtracted(title,responseList.joinToString(""))
             return askToMultiChatGPT(title,substringToken(result),getTokenSize(result) > 4000)
@@ -305,14 +305,14 @@ class ProcessActivity : AppCompatActivity() {
     // JavaScript에서 호출할 메서드
     @JavascriptInterface
     fun onTextExtracted(title:String,result: String) {
-        Toast.makeText(this,title, Toast.LENGTH_LONG).show()
+        //Toast.makeText(this,title, Toast.LENGTH_LONG).show()
         scriptTitle = title.trim()
         askToMultiChatGPT(title,substringToken(result),getTokenSize(result) >= 4000)
     }
 
     private fun substringToken(t:String): MutableList<String> {
 
-        Toast.makeText(this@ProcessActivity,"substringToken함수 시작 ${t.length}", Toast.LENGTH_SHORT).show()
+        //Toast.makeText(this@ProcessActivity,"substringToken함수 시작 ${t.length}", Toast.LENGTH_SHORT).show()
         Log.d("aaa","substringToken함수 시작 ${t.length}")
         var result = mutableListOf<String>()
         if (getTokenSize(t) <= 4000){
